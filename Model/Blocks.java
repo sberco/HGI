@@ -35,10 +35,10 @@ public class Blocks implements Iterable<Block> {
 		while ( (line=br.readLine())!=null ) {
 			StringTokenizer st = new StringTokenizer( line ) ;
 			int blockID = Integer.decode( st.nextToken() );
-			int startWindow = Integer.decode( st.nextToken() );
-			int endWindow = Integer.decode( st.nextToken() );
+			int firstWindow = Integer.decode( st.nextToken() );
+			int lastWindow = Integer.decode( st.nextToken() )-1;
 			double threshold = Double.parseDouble( st.nextToken() );
-			blocks.add( new Block  ( blockID, startWindow, endWindow, threshold ) );
+			blocks.add( new Block  ( blockID, firstWindow, lastWindow, threshold ) );
 		}
 		br.close();
 		

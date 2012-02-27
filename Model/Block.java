@@ -2,15 +2,15 @@ package Model;
 
 public class Block implements Comparable<Block> {
 	
-	public Block( int ID, int startWindow, int endWindow, double threshold ) {
+	public Block( int ID, int firstWindow, int lastWindow, double threshold ) {
 		this.ID = ID;
-		this.startWindow = startWindow;
-		this.endWindow = endWindow;
+		this.firstWindow = firstWindow;
+		this.lastWindow = lastWindow;
 		this.threshold = threshold;
 	}
 	
 	public int compareTo(Block o) {
-		return startWindow-o.startWindow;
+		return firstWindow-o.firstWindow;
 	}
 	
 	public boolean equals(Object arg0) {
@@ -21,12 +21,12 @@ public class Block implements Comparable<Block> {
 		return ID;
 	}
 	
-	public int getStartWindow() {
-		return startWindow;
+	public int getFirstWindow() {
+		return firstWindow;
 	}
 	
-	public int getEndWindow() {
-		return endWindow;
+	public int getLastWindow() {
+		return lastWindow;
 	}
 	
 	public double getThreshold() {
@@ -34,7 +34,7 @@ public class Block implements Comparable<Block> {
 	}
 	
 	private int ID;
-	private int startWindow;
-	private int endWindow;
+	private int firstWindow;
+	private int lastWindow;
 	private double threshold;
 }
