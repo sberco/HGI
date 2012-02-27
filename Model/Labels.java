@@ -25,6 +25,10 @@ public class Labels {
 		return labelMap.containsKey( id );
 	}
 	
+	public int size() {
+		return labelMap.size();
+	}
+	
 	public static Labels load( String fileName ) throws IOException {
 		Labels labels = new Labels();
 		BufferedReader br = new BufferedReader( new FileReader( fileName ) ) ;
