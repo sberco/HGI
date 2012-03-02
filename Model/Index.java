@@ -45,7 +45,7 @@ public class Index {
 				int indIdx = Integer.decode( st.nextToken() );
 				indIdxVec.add( indIdx );
 			}
-			int indIdxArr[] = Arrays.toPrimitive( indIdxVec );
+			int indIdxArr[] = Arrays.toPrimitiveInteger( indIdxVec );
 			WindowIndex wi = index.getWindowIndex( windowIdx );
 			wi.setConfList( conf, indIdxArr );
 		}

@@ -4,7 +4,7 @@ import java.util.Vector;
 
 public class Arrays {
 	
-	public static int[] toPrimitive( Vector<Integer> vals ) {
+	public static int[] toPrimitiveInteger( Vector<Integer> vals ) {
 		int res[] = new int[ vals.size() ];
 		int i=0;
 		for ( int v : vals ) {
@@ -14,7 +14,7 @@ public class Arrays {
 		return res;
 	}
 	
-	public static double[] toPrimitive( Vector<Double> vals ) {
+	public static double[] toPrimitiveDouble( Vector<Double> vals ) {
 		double res[] = new double[ vals.size() ];
 		int i=0;
 		for ( double v : vals ) {

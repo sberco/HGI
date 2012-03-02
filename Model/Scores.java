@@ -51,7 +51,7 @@ public class Scores {
 					scores.add( Double.parseDouble( st.nextToken()) );
 				}
 			}
-			double scoresArr[] = Arrays.toPrimitive(scores);
+			double scoresArr[] = Arrays.toPrimitiveDouble(scores);
 			score.setScore( windowIdx, scoresArr );
 		}
 		br.close();

@@ -61,7 +61,7 @@ public class LinearAnalysis {
 			relatedIndividualsVec.add( i );
 		}
 		
-		return Arrays.toPrimitive( relatedIndividualsVec );
+		return Arrays.toPrimitiveInteger( relatedIndividualsVec );
 	}
 	
 }

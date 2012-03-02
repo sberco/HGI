@@ -49,7 +49,7 @@ public class Query implements Iterable<String> {
 			while (st.hasMoreTokens()) {
 				configurations.add( Integer.parseInt(st.nextToken()) );
 			}
-			int confArray[] = Arrays.toPrimitive( configurations );
+			int confArray[] = Arrays.toPrimitiveInteger( configurations );
 			
 			//
 			//	Add to query
