@@ -2,11 +2,14 @@ package Model;
 
 public class Block implements Comparable<Block> {
 	
-	public Block( int ID, int firstWindow, int lastWindow, double threshold ) {
+	public Block( int ID, int firstWindow, int lastWindow, double threshold, double distCM, double startCM, double stopCM ) {
 		this.ID = ID;
 		this.firstWindow = firstWindow;
 		this.lastWindow = lastWindow;
 		this.threshold = threshold;
+		this.distCM = distCM;
+		this.startCM = startCM;
+		this.stopCM = stopCM;
 	}
 	
 	public int compareTo(Block o) {
@@ -33,8 +36,23 @@ public class Block implements Comparable<Block> {
 		return threshold;
 	}
 	
+	public double getStartCM() {
+		return startCM;
+	}
+	
+	public double getStopCM() {
+		return stopCM;
+	}
+	
+	public double getDistCM() {
+		return distCM;
+	}
+	
 	private int ID;
 	private int firstWindow;
 	private int lastWindow;
 	private double threshold;
+	private double distCM;
+	private double startCM;
+	private double stopCM;
 }

@@ -38,7 +38,10 @@ public class Blocks implements Iterable<Block> {
 			int firstWindow = Integer.decode( st.nextToken() );
 			int lastWindow = Integer.decode( st.nextToken() )-1;
 			double threshold = Double.parseDouble( st.nextToken() );
-			blocks.add( new Block  ( blockID, firstWindow, lastWindow, threshold ) );
+			double distCM = Double.parseDouble( st.nextToken() );			
+			double startCM = Double.parseDouble( st.nextToken() );
+			double stopCM = Double.parseDouble( st.nextToken() );
+			blocks.add( new Block  ( blockID, firstWindow, lastWindow, threshold, distCM, startCM, stopCM ) );
 		}
 		br.close();
 		

@@ -40,6 +40,7 @@ public class Index {
 			StringTokenizer st = new StringTokenizer( line );
 			int windowIdx = Integer.parseInt( st.nextToken() );
 			int conf = Integer.parseInt( st.nextToken() );
+			String confStr = st.nextToken();
 			Vector<Integer> indIdxVec = new Vector<Integer>();
 			while ( st.hasMoreTokens()) {
 				int indIdx = Integer.decode( st.nextToken() );
@@ -47,7 +48,7 @@ public class Index {
 			}
 			int indIdxArr[] = Arrays.toPrimitiveInteger( indIdxVec );
 			WindowIndex wi = index.getWindowIndex( windowIdx );
-			wi.setConfList( conf, indIdxArr );
+			wi.setConfList( conf, confStr, indIdxArr );
 		}
 		br.close();
 		return index;
