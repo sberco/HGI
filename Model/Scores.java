@@ -30,11 +30,6 @@ public class Scores {
 	}
 	
 	public double getScore( int windowIdx, int conf1, int conf2 ) {
-		if ( conf1<conf2 ) {
-			int tmp = conf1;
-			conf1 = conf2;
-			conf2 = tmp;
-		}
 		return scoreMap.get( windowIdx )[ conf2*numConfs+conf1 ];
 	}
 	
@@ -42,20 +37,33 @@ public class Scores {
 		Scores score = new Scores( windowSize );
 		BufferedReader br = new BufferedReader( new FileReader( fileName ) );
 		String line;
+		int numConfs = (int)Math.pow( 3, windowSize );
+		int count = 0;
 		while ((line=br.readLine())!=null ) {
+			count++;
+			System.out.println("C:"+count);
 			StringTokenizer st = new StringTokenizer( line );
 			int windowIdx = Integer.decode( st.nextToken() );
-			Vector<Double> scores = new Vector<Double>();
-			for ( int i=0;i<windowSize;i++ ) {
-				for (int j=i;j<windowSize;j++ ) {
-					scores.add( Double.parseDouble( st.nextToken()) );
+			double fullScoreMatrix[] = new double[ numConfs* numConfs ];			
+			for ( int i=0;i<numConfs;i++ ) {
+				for (int j=i;j<numConfs;j++ ) {
+					double v = Double.parseDouble( normalize(st.nextToken()) );
+					fullScoreMatrix[i*numConfs+j] = v;
+					fullScoreMatrix[j*numConfs+i] = v;
 				}
 			}
-			double scoresArr[] = Arrays.toPrimitiveDouble(scores);
-			score.setScore( windowIdx, scoresArr );
+			
+			//
+			//	Inflate score to full matrix
+			score.setScore( windowIdx, fullScoreMatrix );
 		}
 		br.close();
 		return score;
+	}
+	
+	private static String normalize( String str ) {
+		if (str.indexOf("inf")!=-1 || str.indexOf("nan")!=-1) return "0";
+		return str;
 	}
 	
 	private int windowSize, numConfs;

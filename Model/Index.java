@@ -12,7 +12,7 @@ import Utils.Arrays;
 public class Index {
 	
 	public Index( int windowSize ) {
-		this.numConfs = (int)Math.pow(2, windowSize);
+		this.numConfs = (int)Math.pow(3, windowSize);
 		this.windowSize = windowSize;
 		windowIndexMap = new HashMap<Integer, WindowIndex>(); 
 	}
@@ -32,8 +32,8 @@ public class Index {
 		return windowIndexMap.get( windowIdx );
 	}
 	
-	public static Index load( String fileName, int numConfs ) throws IOException {
-		Index index = new Index( numConfs );
+	public static Index load( String fileName, int windowSize ) throws IOException {
+		Index index = new Index( windowSize );
 		BufferedReader br = new BufferedReader( new FileReader( fileName ) );
 		String line;
 		while ( (line=br.readLine())!=null ) {
@@ -42,8 +42,10 @@ public class Index {
 			int conf = Integer.parseInt( st.nextToken() );
 			String confStr = st.nextToken();
 			Vector<Integer> indIdxVec = new Vector<Integer>();
-			while ( st.hasMoreTokens()) {
-				int indIdx = Integer.decode( st.nextToken() );
+			String indexListStr = st.nextToken();
+			String indices[] = indexListStr.split(",");
+			for ( String indIdxStr : indices ) {
+				int indIdx = Integer.decode( indIdxStr );
 				indIdxVec.add( indIdx );
 			}
 			int indIdxArr[] = Arrays.toPrimitiveInteger( indIdxVec );
