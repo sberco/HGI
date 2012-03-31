@@ -4,22 +4,30 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.StringTokenizer;
-import java.util.Vector;
-
-import Utils.Arrays;
 
 public class Scores {
 	
 	public Scores( int windowSize ) {
 		this.windowSize = windowSize;
-		numConfs = (int)Math.pow(2, windowSize );
+		numConfs = (int)Math.pow(3, windowSize );
 		scoreMap = new HashMap<Integer, double[]>();
+		badSet = new HashSet<Integer>();
 	}
 	
 	public int getWindowSize() {
 		return windowSize;
 	}
+	
+	public boolean isBad( int index ) {
+		return badSet.contains(index);
+	}
+	
+	public void setBadIndex( int index ) {
+		badSet.add( index );
+	}
+	
 	
 	public void setScore( int windowIdx, double scoresArr[] ) {
 		scoreMap.put( windowIdx, scoresArr );
@@ -30,7 +38,8 @@ public class Scores {
 	}
 	
 	public double getScore( int windowIdx, int conf1, int conf2 ) {
-		return scoreMap.get( windowIdx )[ conf2*numConfs+conf1 ];
+		double [] scoreArr = scoreMap.get( windowIdx );
+		return scoreArr[ conf2*numConfs+conf1 ];
 	}
 	
 	public static Scores load( String fileName, int windowSize ) throws IOException {
@@ -41,13 +50,16 @@ public class Scores {
 		int count = 0;
 		while ((line=br.readLine())!=null ) {
 			count++;
-			System.out.println("C:"+count);
+//			System.out.println("C:"+count);
 			StringTokenizer st = new StringTokenizer( line );
 			int windowIdx = Integer.decode( st.nextToken() );
 			double fullScoreMatrix[] = new double[ numConfs* numConfs ];			
 			for ( int i=0;i<numConfs;i++ ) {
 				for (int j=i;j<numConfs;j++ ) {
-					double v = Double.parseDouble( normalize(st.nextToken()) );
+//				for (int j=0;j<=i;j++ ) {
+					String valStr = st.nextToken();
+					if ( isBad( valStr ) ) score.setBadIndex( windowIdx );
+					double v = Double.parseDouble( normalize(valStr) );
 					fullScoreMatrix[i*numConfs+j] = v;
 					fullScoreMatrix[j*numConfs+i] = v;
 				}
@@ -66,7 +78,14 @@ public class Scores {
 		return str;
 	}
 	
+	private static boolean isBad( String str ) {
+		if (str.indexOf("inf")!=-1 || str.indexOf("nan")!=-1) return true;
+		return false;
+	}
+	
+	
 	private int windowSize, numConfs;
 	private HashMap<Integer, double[]> scoreMap;
+	private HashSet<Integer> badSet;
 	
 }

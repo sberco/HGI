@@ -81,7 +81,7 @@ public class AnalysisRunner {
 			for ( int i : relatedIndividuals ) {
 				logger.info("FOUND RELATED:"+ queryID+"\t"+i );
 			}
-			break;
+//			break;
 		}
 		
 		
@@ -119,7 +119,7 @@ public class AnalysisRunner {
 		//
 		//	Load block file
 		String blockFN = experimentConf.getProperty("blockFile");
-		logger.info("Loading block-informatiopn file"+blockFN);
+		logger.info("Loading block-information file"+blockFN);
 		blocks = Blocks.load( blockFN );
 		
 		//
