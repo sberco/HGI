@@ -34,7 +34,7 @@ public class LinearAnalysis {
       {
         if ( scoresMatrix.isBad(winIdx) )
         {
-          System.out.println("Block is bad..." + block.getID());
+          System.err.println("Block is bad..." + block.getID());
           break;
         }
       }
@@ -58,7 +58,7 @@ public class LinearAnalysis {
 				//	Skip bad-score windows
 				if ( scoresMatrix.isBad(winIdx) ) {
 					shouldSkipBlock = true;
-          System.out.println("Block is bad..." + block.getID());
+          System.err.println("Block is bad..." + block.getID());
 					break;
 				}
 				
@@ -116,12 +116,14 @@ public class LinearAnalysis {
 				if ( scores[indIdx]>maxScore ) 
           maxScore = scores[indIdx];
 
+        /* Debug for one specific test case 
         if (block.getID() == 465)
         {
           if (labels.getString(indIdx).equals(i1) && queryID.equals(i2)) {
-            System.out.println("Score, thresh at known ibd block " + scores[indIdx] + ", " + block.getThreshold());
+            System.err.println("Score, thresh at known ibd block " + scores[indIdx] + ", " + block.getThreshold());
           }
         }
+        */
 
         double scoreDiff = scores[indIdx] - block.getThreshold();
         if (!bestScoreDiffs.containsKey(indIdx) || scoreDiff > bestScoreDiffs.get(indIdx))
