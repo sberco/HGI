@@ -39,7 +39,15 @@ public class Scores {
 	
 	public double getScore( int windowIdx, int conf1, int conf2 ) {
 		double [] scoreArr = scoreMap.get( windowIdx );
-		return scoreArr[ conf2*numConfs+conf1 ];
+    try
+    {
+      return scoreArr[ conf2*numConfs+conf1 ];
+    }
+    catch (NullPointerException e)
+    {
+      System.err.println("winIdx: " + windowIdx + " conf1: " + conf1 + " conf2: " + conf2 + " numConfs: " + numConfs + " idx:_" + (conf2*numConfs+conf1) + "_");
+      throw e;
+    }
 	}
 	
 	public static Scores load( String fileName, int windowSize ) throws IOException {

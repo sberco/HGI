@@ -26,6 +26,10 @@ public class Relations {
 	public boolean hasRelation( String ID1 ) {
 		return relations.containsKey( ID1 );
 	}
+
+	public boolean isRelated( String ID1, String ID2 ) {
+		return relations.containsKey( ID1 ) && relations.get(ID1).contains(ID2);
+	}
 	
 	public Vector<String> getRelations( String ID1 ) {
 		return relations.get( ID1 );

@@ -4,9 +4,6 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.Properties;
 
-import org.apache.log4j.BasicConfigurator;
-import org.apache.log4j.Logger;
-
 import Model.Block;
 import Model.Blocks;
 import Model.Index;
@@ -21,11 +18,11 @@ public class AnalysisRunner {
 
 		//
 		//	Initialize logging
-		initLog();
+		//initLog();
 		
 		//
 		//	Start analysis
-		logger.info("Starting analysis.");
+		System.err.println("Starting analysis.");
 		
 		////////////////////////////////////////////////////////////////////////////////
 		//
@@ -33,16 +30,16 @@ public class AnalysisRunner {
 		//
 		////////////////////////////////////////////////////////////////////////////////		
 		if ( args.length!=1 ) {
-			logger.error("Configuration file name is missing.");
+			System.err.println("Configuration file name is missing.");
 			System.exit(-1);
 		}
 		String confFileName = args[0];
-		logger.info("Loading experiment properties:");
+		System.err.println("Loading experiment properties:");
 		Properties experimentConf = new Properties();
 		try {
 			experimentConf.load(new FileReader( confFileName ));
 		} catch ( IOException exp ) {
-			logger.error("Could not load input files.");
+			System.err.println("Could not load input files.");
 			exp.printStackTrace();
 			System.exit(-1);
 		}
@@ -59,10 +56,10 @@ public class AnalysisRunner {
 		//
 		////////////////////////////////////////////////////////////////////////////////
 		try {
-			logger.info("Loading input files.");
+			System.err.println("Loading input files.");
 			loadInputFiles(experimentConf);						
 		} catch ( IOException exp ) {
-			logger.error("Could not load input files.");
+			System.err.println("Could not load input files.");
 			exp.printStackTrace();
 			System.exit(-1);
 		}
@@ -72,14 +69,17 @@ public class AnalysisRunner {
 		//	Perform the analysis.
 		//
 		////////////////////////////////////////////////////////////////////////////////		
-		logger.info("Applying analysis.");
+		System.err.println("Applying analysis.");
 		LinearAnalysis la = new LinearAnalysis();
-		for ( String queryID : query ) {
-			logger.info("Analyzing "+ queryID );
+		// for ( String queryID : query ) {
+    for (int q = 0; q < query.getNumIndividuals(); ++q) {
+      String queryID = query.getName(q);
+			System.err.println("Analyzing "+ queryID );
 			int queryConfs[] = query.getIndConf( queryID );
-			int relatedIndividuals[] = la.getRelated( labels, queryConfs, index, blocks, scores );
+
+			int relatedIndividuals[] = la.getRelated( labels, queryConfs, index, blocks, scores, relations, queryID );
 			for ( int i : relatedIndividuals ) {
-				logger.info("FOUND RELATED:"+ queryID+"\t"+i );
+				System.err.println("FOUND RELATED:"+ queryID+"\t"+labels.getString(i) );
 			}
 //			break;
 		}
@@ -87,7 +87,7 @@ public class AnalysisRunner {
 		
 		//
 		//	Analysis done
-		logger.info("Analysis done.");
+		System.err.println("Analysis done.");
 	}
 
 	private static void loadInputFiles(Properties experimentConf)
@@ -95,46 +95,48 @@ public class AnalysisRunner {
 		//
 		//	Load index labels
 		String labelFN = experimentConf.getProperty("labelFile");
-		logger.info("Loading index-individuals labels:"+ labelFN );
+		System.err.println("Loading index-individuals labels:"+ labelFN );
 		labels = Labels.load( labelFN );
 		
 		//
 		//	Load index file
 		String indexFN = experimentConf.getProperty("indexFile");
-		logger.info("Loading indexed individuals"+ indexFN );
+		System.err.println("Loading indexed individuals"+ indexFN );
 		index = Index.load( indexFN, windowSize );
 		
 		//
 		//	Load query individuals
 		String queryFN = experimentConf.getProperty("queryFile");
-		logger.info("Loading query individuals "+ queryFN );
+		System.err.println("Loading query individuals "+ queryFN );
 		query = Query.load( queryFN );
 		
 		//
 		//	Load relationship file
 		String relationshipFN = experimentConf.getProperty("relationshipFile");
-		logger.info("Loading relationship file.");
+		System.err.println("Loading relationship file.");
 		relations = Relations.load( relationshipFN );
 		
 		//
 		//	Load block file
 		String blockFN = experimentConf.getProperty("blockFile");
-		logger.info("Loading block-information file"+blockFN);
+		System.err.println("Loading block-information file"+blockFN);
 		blocks = Blocks.load( blockFN );
 		
 		//
 		//	Load score files
 		String scoreFN = experimentConf.getProperty("scoreFile");
-		logger.info("Loading window scores"+ scoreFN );
+		System.err.println("Loading window scores"+ scoreFN );
 		scores = Scores.load( scoreFN, windowSize );
 	}
 	
+  /*
 	private static void initLog() {
 		BasicConfigurator.configure();
-		logger = Logger.getLogger("HGI.Analysis.Runner");
+		System.err.println("HGI.Analysis.Runner");
 	}
+  */
 	
-	private static Logger logger;
+	// private static Logger logger;
 	
 	private static Labels labels = null;
 	private static Index index = null;

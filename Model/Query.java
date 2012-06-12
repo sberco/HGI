@@ -14,18 +14,29 @@ public class Query implements Iterable<String> {
 	
 	public Query() {
 		indConfs = new HashMap<String,int[]>();
+		indNames = new Vector<String>();
 	}
 	
 	public int getNumIndividuals() {
 		return indConfs.size();
 	}
 	
+	public int[] getIndConf( int idx ) {
+		return indConfs.get( indNames.get(idx) );
+	}
+
 	public int[] getIndConf( String ID ) {
 		return indConfs.get( ID );
 	}
+
+  public String getName(int idx)
+  {
+    return indNames.get(idx);
+  }
 	
 	public void add( String ID, int [] confs ) {
 		indConfs.put( ID, confs );
+    indNames.add(ID);
 	}
 	
 	public Iterator<String> iterator() {
@@ -61,4 +72,5 @@ public class Query implements Iterable<String> {
 	}
 	
 	private HashMap<String,int[]> indConfs;
+  private Vector<String> indNames;
 }
