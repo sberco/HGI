@@ -79,7 +79,7 @@ public class AnalysisRunner {
 
 			int relatedIndividuals[] = la.getRelated( labels, queryConfs, index, blocks, scores, relations, queryID );
 			for ( int i : relatedIndividuals ) {
-				System.err.println("FOUND RELATED:"+ queryID+"\t"+labels.getString(i) );
+				System.out.println("FOUND RELATED:\t"+ queryID+"\t"+labels.getString(i) );
 			}
 //			break;
 		}

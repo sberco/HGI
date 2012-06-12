@@ -139,7 +139,7 @@ public class LinearAnalysis {
 					//	TODO: Turn this back on to see (very) relevant information
           int snp_start = index.getWindowSize() * block.getFirstWindow();
           int snp_stop = index.getWindowSize() * block.getLastWindow();
-					System.out.println("IBD Block: " + b + " ind: "+ labels.getString(indIdx) +"\twin.startIdx: "+block.getFirstWindow()+"\twin.lastIdx: " +block.getLastWindow() + "\tsnp.startIdx: " + snp_start + "\tsnp.stopIdx: " + snp_stop + "\tscore: "+(Math.round(scores[indIdx] * 100.0) / 100.0)+"\t> thresh: "+block.getThreshold());
+					System.err.println("IBD Block: " + b + " ind: "+ labels.getString(indIdx) +"\twin.startIdx: "+block.getFirstWindow()+"\twin.lastIdx: " +block.getLastWindow() + "\tsnp.startIdx: " + snp_start + "\tsnp.stopIdx: " + snp_stop + "\tscore: "+(Math.round(scores[indIdx] * 100.0) / 100.0)+"\t> thresh: "+block.getThreshold());
 				}
 			}
 //			if ( block.getFirstWindow()> 200 ) System.exit(-1);
@@ -157,9 +157,9 @@ public class LinearAnalysis {
         String indName = labels.getString(indIdx);
         if (relations.isRelated(queryID, indName))
         {
-          System.out.print(queryID + " is actually to be related to: " + indName);
+          System.err.print(queryID + " is actually to be related to: " + indName);
           Block block = bestBlocks.get(indIdx);
-          System.out.println(" best score diff = " + bestScoreDiffs.get(indIdx) + " @ block " + block.getID() + ", win.start=" + block.getFirstWindow() );
+          System.err.println(" best score diff = " + bestScoreDiffs.get(indIdx) + " @ block " + block.getID() + ", win.start=" + block.getFirstWindow() );
 
         }
     }
