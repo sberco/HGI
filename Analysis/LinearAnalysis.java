@@ -1,6 +1,7 @@
 package Analysis;
 
 import java.util.HashSet;
+import java.util.HashMap;
 import java.util.Vector;
 
 //import org.apache.commons.lang3.StringUtils;
@@ -17,9 +18,10 @@ import java.util.HashMap;
 
 public class LinearAnalysis {
 
-	public int [] getRelated( Labels labels, int[] queryConfs, Index index, Blocks blocks, Scores scoresMatrix, Relations relations, String queryID ) {
+	public int [] getRelated( Labels labels, int[] queryConfs, Index index, Blocks blocks, Scores scoresMatrix, Relations relations, String queryID, Vector<Vector<Integer> > rel_blocks ) {
 
 		HashSet<Integer> relatedIndividuals = new HashSet<Integer>();
+		HashMap<Integer, Vector<Integer> > relatedBlocks = new HashMap<Integer, Vector<Integer> >();
 
     HashMap<Integer, Block> bestBlocks = new HashMap<Integer, Block>();
     HashMap<Integer, Double> bestScoreDiffs = new HashMap<Integer, Double>();
@@ -135,6 +137,12 @@ public class LinearAnalysis {
 				if ( scores[indIdx]>block.getThreshold() ) {
 //				if ( scores[indIdx]>Math.max(20.3,block.getThreshold()) ) {
 					relatedIndividuals.add( indIdx );
+
+          // Append this block to the list of blocks that this relative has IBD
+          if (!relatedBlocks.containsKey(indIdx))
+            relatedBlocks.put(indIdx, new Vector<Integer>());
+
+          relatedBlocks.get(indIdx).add(b);
 					
 					//
 					//	TODO: Shows individual specific scores --
@@ -156,19 +164,22 @@ public class LinearAnalysis {
 		}
 
     for ( int indIdx=0;indIdx<scores.length;indIdx++ ) {
-        String indName = labels.getString(indIdx);
-        if (relations.isRelated(queryID, indName))
-        {
-          System.err.print(queryID + " is actually to be related to: " + indName);
-          Block block = bestBlocks.get(indIdx);
-          System.err.println(" best score diff = " + bestScoreDiffs.get(indIdx) + " @ block " + block.getID() + ", win.start=" + block.getFirstWindow() );
+      String indName = labels.getString(indIdx);
+      if (relations.isRelated(queryID, indName))
+      {
+        System.err.print(queryID + " is actually to be related to: " + indName);
+        Block block = bestBlocks.get(indIdx);
+        System.err.println(" best score diff = " + bestScoreDiffs.get(indIdx) + " @ block " + block.getID() + ", win.start=" + block.getFirstWindow() );
 
-        }
+      }
     }
 
+    // Prepare return values
 		Vector<Integer> relatedIndividualsVec = new Vector<Integer>();
+    rel_blocks.clear();
 		for ( int i : relatedIndividuals ) {
 			relatedIndividualsVec.add( i );
+      rel_blocks.add(relatedBlocks.get(i));
 		}
 
 		return Arrays.toPrimitiveInteger( relatedIndividualsVec );

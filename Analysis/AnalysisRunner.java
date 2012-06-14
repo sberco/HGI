@@ -2,7 +2,10 @@ package Analysis;
 
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.FileWriter;
+import java.io.BufferedWriter;
 import java.util.Properties;
+import java.util.Vector;
 
 import Model.Block;
 import Model.Blocks;
@@ -14,7 +17,7 @@ import Model.Scores;
 
 public class AnalysisRunner {
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws java.io.IOException {
 
 		//
 		//	Initialize logging
@@ -29,11 +32,15 @@ public class AnalysisRunner {
 		//	Load experiment configuration.
 		//
 		////////////////////////////////////////////////////////////////////////////////		
-		if ( args.length!=1 ) {
-			System.err.println("Configuration file name is missing.");
+		if ( args.length < 1 || args[0].equals("-h") ) {
+			System.err.println("args: <config_file> [outBlockFn]");
 			System.exit(-1);
 		}
 		String confFileName = args[0];
+    BufferedWriter outBlockIO = null;
+    if (args.length >= 2)
+      outBlockIO = new BufferedWriter(new FileWriter(args[1]));
+
 		System.err.println("Loading experiment properties:");
 		Properties experimentConf = new Properties();
 		try {
@@ -77,13 +84,35 @@ public class AnalysisRunner {
 			System.err.println("Analyzing "+ queryID );
 			int queryConfs[] = query.getIndConf( queryID );
 
-			int relatedIndividuals[] = la.getRelated( labels, queryConfs, index, blocks, scores, relations, queryID );
-			for ( int i : relatedIndividuals ) {
-				System.out.println("FOUND RELATED:\t"+ queryID+"\t"+labels.getString(i) );
+      Vector<Vector<Integer> > ibd_blocks = new Vector<Vector<Integer> >();
+
+			int relatedIndividuals[] = la.getRelated( labels, queryConfs, index, blocks, scores, relations, queryID, ibd_blocks );
+      int i = 0;
+			for ( int ind : relatedIndividuals ) {
+				System.out.println("FOUND RELATED:\t"+ queryID+"\t"+labels.getString(ind) );
+
+        if (outBlockIO != null)
+        {
+          for (int b : ibd_blocks.get(i))
+          {
+            String correct = "F";
+            String indName = labels.getString(ind);
+
+            if (relations.isRelated(queryID, indName))
+              correct = "T";
+
+            outBlockIO.write(queryID + "\t" + indName + "\t" + correct + "\t" + b +"\n");
+          }
+        }
+        ++i;
 			}
+
 //			break;
 		}
 		
+    if (outBlockIO != null)
+      outBlockIO.close();
+
 		
 		//
 		//	Analysis done
@@ -92,6 +121,7 @@ public class AnalysisRunner {
 
 	private static void loadInputFiles(Properties experimentConf)
 			throws IOException {
+
 		//
 		//	Load index labels
 		String labelFN = experimentConf.getProperty("labelFile");
