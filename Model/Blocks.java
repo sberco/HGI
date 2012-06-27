@@ -21,6 +21,10 @@ public class Blocks implements Iterable<Block> {
 	public void add( Block block ) {
 		blocks.add( block );
 	}
+
+  public Block get(int b) {
+    return blocks.get(b);
+  }
 	
 	public Iterator<Block> iterator() {
 		return blocks.iterator();
