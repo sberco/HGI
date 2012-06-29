@@ -33,13 +33,13 @@ public class AnalysisRunner {
 		//
 		////////////////////////////////////////////////////////////////////////////////		
 		if ( args.length < 1 || args[0].equals("-h") ) {
-			System.err.println("args: <config_file> [outBlockFn]");
+			System.err.println("args: <config_file> [calledBLocks]");
 			System.exit(-1);
 		}
 		String confFileName = args[0];
-    BufferedWriter outBlockIO = null;
+    BufferedWriter calledBlockIO = null;
     if (args.length >= 2)
-      outBlockIO = new BufferedWriter(new FileWriter(args[1]));
+      calledBlockIO = new BufferedWriter(new FileWriter(args[1]));
 
 		System.err.println("Loading experiment properties:");
 		Properties experimentConf = new Properties();
@@ -91,8 +91,10 @@ public class AnalysisRunner {
 			for ( int ind : relatedIndividuals ) {
 				System.out.println("FOUND RELATED:\t"+ queryID+"\t"+labels.getString(ind) );
 
-        if (outBlockIO != null)
+        if (calledBlockIO != null)
         {
+          calledBlockIO.write("#queryName\thitName\tisCorrect\tblockIdx\twinStart\twinEnd\tsnpStart\tsnpEnd\n"); // header
+
           for (int b : ibd_blocks.get(i))
           {
             String correct = "F";
@@ -101,7 +103,15 @@ public class AnalysisRunner {
             if (relations.isRelated(queryID, indName))
               correct = "T";
 
-            outBlockIO.write(queryID + "\t" + indName + "\t" + correct + "\t" + b +"\n");
+            int wstart = blocks.get(b).getFirstWindow();
+            int wend   = blocks.get(b).getLastWindow() + 1;
+            int mstart = wstart * windowSize;
+            int mend   = wend * windowSize;
+
+            calledBlockIO.write(queryID + "\t" + indName + "\t" + correct + "\t" + b
+                + "\t" + wstart + "\t" + wend
+                + "\t" + mstart + "\t" + mend + "\n");
+
           }
         }
         ++i;
@@ -110,8 +120,8 @@ public class AnalysisRunner {
 //			break;
 		}
 		
-    if (outBlockIO != null)
-      outBlockIO.close();
+    if (calledBlockIO != null)
+      calledBlockIO.close();
 
 		
 		//

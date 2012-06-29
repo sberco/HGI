@@ -44,7 +44,7 @@ public class LinearAnalysis {
 
 		//
 		//	Enumerate over blocks
-    int b = 0;
+    int b = -1;
 		for ( Block block : blocks ) {
       ++b;
 			//
