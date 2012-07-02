@@ -58,13 +58,11 @@ public class Scores {
 		int count = 0;
 		while ((line=br.readLine())!=null ) {
 			count++;
-//			System.out.println("C:"+count);
 			StringTokenizer st = new StringTokenizer( line );
 			int windowIdx = Integer.decode( st.nextToken() );
 			double fullScoreMatrix[] = new double[ numConfs* numConfs ];			
 			for ( int i=0;i<numConfs;i++ ) {
 				for (int j=i;j<numConfs;j++ ) {
-//				for (int j=0;j<=i;j++ ) {
 					String valStr = st.nextToken();
 					if ( isBad( valStr ) ) score.setBadIndex( windowIdx );
 					double v = Double.parseDouble( normalize(valStr) );
