@@ -55,9 +55,7 @@ public class Scores {
 		BufferedReader br = new BufferedReader( new FileReader( fileName ) );
 		String line;
 		int numConfs = (int)Math.pow( 3, windowSize );
-		int count = 0;
 		while ((line=br.readLine())!=null ) {
-			count++;
 			StringTokenizer st = new StringTokenizer( line );
 			int windowIdx = Integer.decode( st.nextToken() );
 			double fullScoreMatrix[] = new double[ numConfs* numConfs ];			

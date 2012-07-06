@@ -2,18 +2,18 @@ package Model;
 
 public class Block implements Comparable<Block> {
 	
-	public Block( int ID, int firstWindow, int lastWindow, double threshold, double distCM, double startCM, double stopCM ) {
+	public Block( int ID, double startCM, double endCM, int winIdx[], double thresholds[] ) {
 		this.ID = ID;
-		this.firstWindow = firstWindow;
-		this.lastWindow = lastWindow;
-		this.threshold = threshold;
-		this.distCM = distCM;
 		this.startCM = startCM;
-		this.stopCM = stopCM;
+		this.endCM = endCM;
+		this.winIdx = winIdx;
+		this.thresholds = thresholds;
 	}
 	
 	public int compareTo(Block o) {
-		return firstWindow-o.firstWindow;
+		if ( startCM-o.startCM>0 ) return 1;
+		if ( startCM-o.startCM<0 ) return -1;
+		return 0;
 	}
 	
 	public boolean equals(Object arg0) {
@@ -24,35 +24,25 @@ public class Block implements Comparable<Block> {
 		return ID;
 	}
 	
-	public int getFirstWindow() {
-		return firstWindow;
-	}
-	
-	public int getLastWindow() {
-		return lastWindow;
-	}
-	
-	public double getThreshold() {
-		return threshold;
-	}
-	
 	public double getStartCM() {
 		return startCM;
 	}
 	
-	public double getStopCM() {
-		return stopCM;
+	public double getEndCM() {
+		return endCM;
 	}
 	
-	public double getDistCM() {
-		return distCM;
+	public int[] getWinIdx() {
+		return winIdx;
 	}
 	
+	public double[] getThresholds() {
+		return thresholds;
+	}
+		
 	private int ID;
-	private int firstWindow;
-	private int lastWindow;
-	private double threshold;
-	private double distCM;
 	private double startCM;
-	private double stopCM;
+	private double endCM;
+	private int winIdx[];
+	private double thresholds[];
 }

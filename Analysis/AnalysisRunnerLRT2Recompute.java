@@ -1,19 +1,20 @@
 package Analysis;
 
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.FileWriter;
 import java.io.BufferedWriter;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.Properties;
 import java.util.Vector;
 
-import Model.Block;
 import Model.Blocks;
 import Model.Index;
 import Model.Labels;
 import Model.Query;
 import Model.Relations;
 import Model.Scores;
+import Model.WinModels;
+import Model.Windows;
 
 /**
  * 
@@ -85,7 +86,7 @@ public class AnalysisRunnerLRT2Recompute {
 		//
 		////////////////////////////////////////////////////////////////////////////////		
 		System.err.println("Applying analysis.");
-		LinearAnalysis la = new LinearAnalysis();
+		LinearAnalysisComputeLRT1 la = new LinearAnalysisComputeLRT1();
 		// for ( String queryID : query ) {
 		for (int q = 0; q < query.getNumIndividuals(); ++q) {
 			String queryID = query.getName(q);
@@ -94,7 +95,8 @@ public class AnalysisRunnerLRT2Recompute {
 
 			Vector<Vector<Integer> > ibd_blocks = new Vector<Vector<Integer> >();
 
-			int relatedIndividuals[] = la.getRelated( labels, queryConfs, index, blocks, scores, relations, queryID, ibd_blocks );
+			int relatedIndividuals[] = la.getRelated( labels, queryConfs, w1Index, blocks, windows, winModels, w1Scores, relations, queryID, ibd_blocks );
+
 			int i = 0;
 			for ( int ind : relatedIndividuals ) {
 				System.out.println("FOUND RELATED:\t"+ queryID+"\t"+labels.getString(ind) );
@@ -111,14 +113,15 @@ public class AnalysisRunnerLRT2Recompute {
 						if (relations.isRelated(queryID, indName))
 							correct = "T";
 
-						int wstart = blocks.get(b).getFirstWindow();
-						int wend   = blocks.get(b).getLastWindow() + 1;
-						int mstart = wstart * windowSize;
-						int mend   = wend * windowSize;
+//						int wstart = blocks.get(b).getFirstWindow();
+//						int wend   = blocks.get(b).getLastWindow() + 1;
+//						int mstart = wstart * windowSize;
+//						int mend   = wend * windowSize;
 
 						calledBlockIO.write(queryID + "\t" + indName + "\t" + correct + "\t" + b
-								+ "\t" + wstart + "\t" + wend
-								+ "\t" + mstart + "\t" + mend + "\n");
+//								+ "\t" + wstart + "\t" + wend
+//								+ "\t" + mstart + "\t" + mend 
+								+ "\n");
 
 					}
 				}
@@ -146,11 +149,18 @@ public class AnalysisRunnerLRT2Recompute {
 		System.err.println("Loading index-individuals labels:"+ labelFN );
 		labels = Labels.load( labelFN );
 
+//		//
+//		//	Load index file
+//		String indexFN = experimentConf.getProperty("indexFile");
+//		System.err.println("Loading indexed individuals"+ indexFN );
+//		index = Index.load( indexFN, windowSize );
+		
 		//
 		//	Load index file
-		String indexFN = experimentConf.getProperty("indexFile");
-		System.err.println("Loading indexed individuals"+ indexFN );
-		index = Index.load( indexFN, windowSize );
+		String w1IndexFN = experimentConf.getProperty("w1IndexFile");
+		System.err.println("Loading indexed individuals"+ w1IndexFN );
+		w1Index = Index.load( w1IndexFN, windowSize );
+
 
 		//
 		//	Load query individuals
@@ -168,44 +178,38 @@ public class AnalysisRunnerLRT2Recompute {
 		//	Load window file : which snps are in which window
 		String windowFN = experimentConf.getProperty("windowFile");
 		System.err.println("Loading window-information file"+windowFN);
-		blocks = Windows.load( windowFN );
+		windows = Windows.load( windowFN );
+		
+		//
+		//	Load window LRT2 file
+		String windowModelFN = experimentConf.getProperty("winModel");
+		System.err.println("Loading window-information file"+windowModelFN);
+		winModels = WinModels.load( windowModelFN );
+		
 
 		//
 		//	Load block file
 		String blockFN = experimentConf.getProperty("blockFile");
 		System.err.println("Loading block-information file"+blockFN);
 		blocks = Blocks.load( blockFN );
-
-		//
-		//	Load score files
-		String scoreFN = experimentConf.getProperty("scoreFile");
-		System.err.println("Loading window scores"+ scoreFN );
-		scores = Scores.load( scoreFN, windowSize );
 		
 		//
 		//	LRT1 score of W=1
 		String w1ScoreFN = experimentConf.getProperty("w1ScoreFile");
-		System.err.println("Loading window scores"+ scoreFN );
+		System.err.println("Loading single-snp window LRT1 scores"+ w1ScoreFN );
 		int w1WindowSize = 1;
-		w1Scores = Scores.load( scoreFN, w1WindowSize );
+		w1Scores = Scores.load( w1ScoreFN, w1WindowSize );
 
 	}
-
-	/*
-	private static void initLog() {
-		BasicConfigurator.configure();
-		System.err.println("HGI.Analysis.Runner");
-	}
-	 */
-
-	// private static Logger logger;
 
 	private static Labels labels = null;
 	private static Index index = null;
+	private static Index w1Index = null;
 	private static Query query = null;
 	private static Relations relations = null;
 	private static Blocks blocks = null;
-	private static Scores scores = null;
+	private static Windows windows = null;
+	private static WinModels winModels = null;
 	private static Scores w1Scores = null;
 
 	private static int windowSize;

@@ -2,18 +2,21 @@ package Model;
 
 public class Window implements Comparable<Window> {
 	
-	public Window( int ID, int firstWindow, int lastWindow, double threshold, double distCM, double startCM, double stopCM ) {
+	public Window( int ID, double startCM, double stopCM, int snpIdx[] ) {
 		this.ID = ID;
-		this.firstWindow = firstWindow;
-		this.lastWindow = lastWindow;
-		this.threshold = threshold;
-		this.distCM = distCM;
+		this.snpIdx = snpIdx;
 		this.startCM = startCM;
 		this.stopCM = stopCM;
 	}
 	
+	public int[] getSNPs() {
+		return snpIdx;
+	}
+	
 	public int compareTo(Window o) {
-		return firstWindow-o.firstWindow;
+		if ( startCM-o.startCM>0 ) return 1;
+		if ( startCM-o.startCM<0 ) return -1;
+		return 0;
 	}
 	
 	public boolean equals(Object arg0) {
@@ -24,35 +27,16 @@ public class Window implements Comparable<Window> {
 		return ID;
 	}
 	
-	public int getFirstWindow() {
-		return firstWindow;
-	}
-	
-	public int getLastWindow() {
-		return lastWindow;
-	}
-	
-	public double getThreshold() {
-		return threshold;
-	}
-	
 	public double getStartCM() {
 		return startCM;
 	}
 	
-	public double getStopCM() {
+	public double getEndCM() {
 		return stopCM;
 	}
-	
-	public double getDistCM() {
-		return distCM;
-	}
-	
+		
 	private int ID;
-	private int firstWindow;
-	private int lastWindow;
-	private double threshold;
-	private double distCM;
 	private double startCM;
 	private double stopCM;
+	private int[] snpIdx;
 }

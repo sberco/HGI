@@ -4,58 +4,75 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Iterator;
-import java.util.StringTokenizer;
 import java.util.Vector;
 
 public class Windows implements Iterable<Window> {
-	
+
 	public Windows() {
 		windows = new Vector<Window>();
-	}
-	
-	public void sortBlocks() {
-		Collections.sort( windows );
-	}
-	
-	public void add( Window window ) {
-		windows.add( window );
+		windowMap = new HashMap<Integer,Window>();
 	}
 
-  public Window get(int w) {
-    return windows.get(w);
-  }
-	
+	public void sortWindows() {
+		Collections.sort( windows );
+	}
+
+	public void add( Window window ) {
+		windows.add( window );
+		windowMap.put( window.getID(), window );
+	}
+
+	public Window get( int wID ) {
+		return windowMap.get( wID );
+	}
+
 	public Iterator<Window> iterator() {
 		return windows.iterator();
 	}
-	
+
 	public static Windows load( String fileName )  throws IOException {
 		BufferedReader br = new BufferedReader( new FileReader( fileName ) );
-		
-		Windows blocks = new Windows();
-		
+
+		Windows windows = new Windows();
+
 		String line;
 		while ( (line=br.readLine())!=null ) {
-			
-			line.sp
-			
-			StringTokenizer st = new StringTokenizer( line ) ;
-			int windowIdx = 
-			int blockID = Integer.decode( st.nextToken() );
-			int firstWindow = Integer.decode( st.nextToken() );
-			int lastWindow = Integer.decode( st.nextToken() )-1;
-			double threshold = Double.parseDouble( st.nextToken() );
-			double distCM = Double.parseDouble( st.nextToken() );			
-			double startCM = Double.parseDouble( st.nextToken() );
-			double stopCM = Double.parseDouble( st.nextToken() );
-			blocks.add( new Block  ( blockID, firstWindow, lastWindow, threshold, distCM, startCM, stopCM ) );
+
+			//
+			//	Split line according to tabs
+			String[] fields = line.split("\t", -1);
+
+			//
+			//	Set the fields
+			int winID = Integer.parseInt( fields[0] );
+			double startCM = Double.parseDouble( fields[1] );
+			double endCM = Double.parseDouble( fields[2] );
+			String snpListStr = fields[3];
+
+			//
+			//	Determine the SNPs within the window
+			String snpList[] = snpListStr.split(",",-1);
+			int snpIdx[] = new int[ snpList.length ];
+			for ( int i=0;i<snpList.length;i++ ) {
+				snpIdx[i] = Integer.parseInt( snpList[i] );
+			}
+
+			//
+			//	Generate the window
+			Window w = new Window( winID, startCM, endCM, snpIdx );
+
+			//
+			//	Add to windows
+			windows.add( w );
 		}
 		br.close();
-		
-		return blocks;
+
+		return windows;
 	}
-	
-	private Vector<Block> windows;
-	
+
+	private Vector<Window> windows;
+	private HashMap<Integer,Window> windowMap;
+
 }
