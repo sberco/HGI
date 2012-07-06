@@ -16,6 +16,44 @@ import Model.Scores;
 import Model.WinModels;
 import Model.Windows;
 
+/* Please implement this for consistency
+ *
+ const double GAUSS_MAX_Z = 8; // Highest z-score
+  const double GAUSS_MIN_PROB = gsl_ran_gaussian_pdf(GAUSS_MAX_Z, 1); // Lowestp rob we can get out of GSL
+
+  double LRT2(double lrt1, const WinModel &model)
+  {
+    AssertMsg(!isinf(lrt1), sprint(lrt1));
+
+    double prob_u = gsl_ran_gaussian_pdf(lrt1 - model.mu_u, model.sd_u); // gsl assumes mean 0 and passed sd
+    double prob_r = gsl_ran_gaussian_pdf(lrt1 - model.mu_r, model.sd_r);
+
+    if (prob_u < GAUSS_MIN_PROB || model.sd_u == 0) // If sd_u/r == 0, then gauss returns nan...
+      prob_u = GAUSS_MIN_PROB;
+    if (prob_r < GAUSS_MIN_PROB || model.sd_r == 0)
+      prob_r = GAUSS_MIN_PROB;
+
+    AssertMsg(!isinf(prob_u) && prob_u > 0, sprint(prob_u) + sprint(prob_r) + sprint(lrt1) + sprint(model.mu_u) + sprint(model.sd_u));
+    AssertMsg(!isinf(prob_r) && prob_r > 0, sprint(prob_r) + sprint(prob_u) + sprint(lrt1) + sprint(model.mu_r) + sprint(model.sd_r));
+
+    float lrt2 = (log(prob_r) - log(prob_u)) / log(10);
+    AssertMsg(!isinf(lrt2), sprint(prob_r) + sprint(prob_u));
+
+    // Clamp to avoid upper tail problem;
+    if (model.mu_r > model.mu_u && lrt1 > model.mu_r && prob_r < prob_u)
+      lrt2 *= -1;
+
+    // float score = lrt2 * ((model.mu_r - model.mu_u) / model.sd_u + (model.mu_r - model.mu_u) / model.sd_r);
+    float score = lrt2;
+
+    AssertMsg(!isinf(score), sprint(model.mu_r) + sprint(model.mu_u) + sprint(model.sd_r) + sprint(model.sd_u));
+
+    return score;
+  }
+*/
+
+
+
 /**
  * 
  * Under this analysis running, LRT1 scores for larger windows are recomputed on 
