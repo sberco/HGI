@@ -36,7 +36,7 @@ public class WinModel {
 	}
 	
 	public double logLikelihoodRatio( double s ) {
-		return Math.log( gRelated.value(s) ) - Math.log( gUnrelated.value(s) );  
+		return (Math.log( gRelated.value(s) ) - Math.log( gUnrelated.value(s) )) / Math.log(10);
 	}
 	
 	private int winID;
