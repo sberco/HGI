@@ -34,6 +34,14 @@ public class Window implements Comparable<Window> {
 	public double getEndCM() {
 		return stopCM;
 	}
+
+  public int getFirstSnp() {
+    return getSNPs()[0];
+  }
+
+  public int getLastSnp() {
+    return getSNPs()[getSNPs().length - 1];
+  }
 		
 	private int ID;
 	private double startCM;
