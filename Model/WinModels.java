@@ -6,7 +6,7 @@ import java.io.IOException;
 import java.util.HashMap;
 
 public class WinModels {
-	
+
 	public WinModels() {
 		modelMap = new HashMap<Integer, WinModel>();
 	}
@@ -38,6 +38,11 @@ public class WinModels {
 			double muR = Double.parseDouble( fields[2] );
 			double sU = Double.parseDouble( fields[3] );
 			double sR = Double.parseDouble( fields[4] );
+
+      if (sU < WinModel.MIN_SD) // To prevent SD == 0
+        sU = WinModel.MIN_SD;
+      if (sR < WinModel.MIN_SD) // To prevent SD == 0
+        sR = WinModel.MIN_SD;
 
 			//
 			//	Set up a model

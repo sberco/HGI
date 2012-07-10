@@ -23,7 +23,7 @@ import Utils.Arrays;
  */
 public class LinearAnalysisComputeLRT1 {
 
-	public int [] getRelated( Labels labels, int[] queryConfs, Index w1index, Blocks blocks, Windows windows, WinModels winModels, Scores w1ScoresMatrix, Relations relations, String queryID, Vector<Vector<Integer> > rel_blocks ) {
+	public int [] getRelated( Labels labels, int[] queryConfs, Index snpIndex, Blocks blocks, Windows windows, WinModels winModels, Scores snpScoresMatrix, Relations relations, String queryID, Vector<Vector<Integer> > rel_blocks ) {
 
 		HashSet<Integer> relatedIndividuals = new HashSet<Integer>();
 		HashMap<Integer, Vector<Integer> > relatedBlocks = new HashMap<Integer, Vector<Integer> >();
@@ -49,9 +49,9 @@ public class LinearAnalysisComputeLRT1 {
 			//
 			//	Enumerate over windows within the block
 			for (int winIdx : block.getWinIdx() ) {
-				if ( w1ScoresMatrix.isBad(winIdx) ) {
+				if ( snpScoresMatrix.isBad(winIdx) ) {
 					System.err.println("Block is bad..." + block.getID());
-					break;
+          System.exit(1);
 				}
 			}
 		}
@@ -78,10 +78,9 @@ public class LinearAnalysisComputeLRT1 {
 
 				//
 				//	Skip bad-score windows
-				if ( w1ScoresMatrix.isBad(winIdx) ) {
-					shouldSkipBlock = true;
+				if ( snpScoresMatrix.isBad(winIdx) ) {
 					System.err.println("Block is bad..." + block.getID());
-					break;
+					System.exit(1);
 				}
 
 				//
@@ -97,12 +96,12 @@ public class LinearAnalysisComputeLRT1 {
 				for ( int snpIdx : windows.get( winIdx ).getSNPs() ) {
 
 					//
-					//	Compute LRT1 scores
-					WindowIndex wi = w1index.getWindowIndex(snpIdx);
-					for ( int c=0;c<w1index.getNumConfs();c++ ) {
+					//	Compute LRT1 score for window
+					WindowIndex si = snpIndex.getWindowIndex(snpIdx);
+					for ( int c=0;c<snpIndex.getNumConfs();c++ ) {
 
-						double localScores = w1ScoresMatrix.getScore( snpIdx, queryConfs[snpIdx], c );
-						int indIdxArr[] = wi.getIndList(c);
+						double localScores = snpScoresMatrix.getScore( snpIdx, queryConfs[snpIdx], c );
+						int indIdxArr[] = si.getIndList(c);
 						if ( indIdxArr==null ) continue;
 
 						for ( int indIdx : indIdxArr ) {
@@ -118,8 +117,6 @@ public class LinearAnalysisComputeLRT1 {
 				}
 
 			}	// END - Enumerate over windows
-
-			if ( shouldSkipBlock ) continue;
 
 			////////////////////////////////////////////////////////////////////////////////
 			//
@@ -164,9 +161,9 @@ public class LinearAnalysisComputeLRT1 {
 					//
 					//	TODO: Shows individual specific scores --
 					//	TODO: Turn this back on to see (very) relevant information
-					double cMStart = block.getStartCM();
-					double cMEnd = block.getEndCM();
-					System.err.println("IBD Block: " + b + " ind: "+ labels.getString(indIdx) +"\twin.startIdx: "+block.getWinIdx()[0]+"\twin.lastIdx: " +block.getWinIdx()[block.getWinIdx().length-1] + "\tsnp.startCM: " + cMStart + "\tsnp.stopIdx: " + cMEnd + "\tscore: "+(Math.round(scores[indIdx] * 100.0) / 100.0)+"\t> thresh: "+block.getThresholds()[0]);
+					// double cMStart = block.getStartCM();
+					// double cMEnd = block.getEndCM();
+					System.err.println("IBD Block: " + b + " ind: "+ labels.getString(indIdx) +"\twin.startIdx: "+block.getWinIdx()[0]+"\twin.lastIdx: " +block.getWinIdx()[block.getWinIdx().length-1] + "\tscore: "+(Math.round(scores[indIdx] * 100.0) / 100.0)+"\t> thresh: "+block.getThresholds()[0]);
 				} // END - Statistic passed threshold
 			} // END - Enumerate over individuals
 		}	// END - Enumerate over blocks

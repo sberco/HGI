@@ -45,16 +45,13 @@ public class Blocks implements Iterable<Block> {
 			//
 			//	Set the fields
 			int winID = Integer.parseInt( fields[0] );
-			double startCM = Double.parseDouble( fields[1] );
-			double endCM = Double.parseDouble( fields[2] );
-			String winListStr = fields[3];
+			// double startCM = Double.parseDouble( fields[1] );
+			// double endCM = Double.parseDouble( fields[2] );
+			String winListStr = fields[1];
 			
 			//
 			//	Determine if thresholds are available
-			String thresholdsStr = null;
-			if ( fields.length==5 ) {
-				thresholdsStr = fields[4];
-			}
+			String thresholdsStr = fields[2];
 
 			//
 			//	Determine the SNPs within the window
@@ -78,7 +75,7 @@ public class Blocks implements Iterable<Block> {
 			
 			//
 			//	Generate the window
-			Block b = new Block( winID, startCM, endCM, winIdx, th );
+			Block b = new Block( winID, -1, -1, winIdx, th );
 
 			//
 			//	Add to windows
