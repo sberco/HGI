@@ -140,14 +140,14 @@ public class AnalysisRunnerLRT2Recompute {
 						if (relations.isRelated(queryID, indName))
 							correct = "T";
 
-//						int wstart = blocks.get(b).getFirstWindow();
-//						int wend   = blocks.get(b).getLastWindow() + 1;
-//						int mstart = wstart * windowSize;
-//						int mend   = wend * windowSize;
+						int wstart = blocks.get(b).getFirstWindow();
+						int wend   = blocks.get(b).getLastWindow() + 1;
+						int mstart = windows.get(wstart).getFirstSnp();
+						int mend   = windows.get(wend - 1).getLastSnp() + 1;
 
 						calledBlockIO.write(queryID + "\t" + indName + "\t" + correct + "\t" + b
-//								+ "\t" + wstart + "\t" + wend
-//								+ "\t" + mstart + "\t" + mend 
+								+ "\t" + wstart + "\t" + wend
+								+ "\t" + mstart + "\t" + mend 
 								+ "\n");
 
 					}

@@ -39,6 +39,15 @@ public class Block implements Comparable<Block> {
 	public double[] getThresholds() {
 		return thresholds;
 	}
+
+  public int getFirstWindow() {
+    return getWinIdx()[0];
+  }
+
+  public int getLastWindow() {
+    return getWinIdx()[getWinIdx().length - 1];
+  }
+		
 		
 	private int ID;
 	private double startCM;

@@ -15,6 +15,7 @@ import Model.WinModels;
 import Model.WindowIndex;
 import Model.Windows;
 import Utils.Arrays;
+import java.util.Map;
 
 /**
  * 
@@ -44,8 +45,9 @@ public class LinearAnalysisComputeLRT1 {
 
 		//
 		//	Enumerate over blocks
-		for ( Block block : blocks ) {
+		for ( Map.Entry<Integer, Block> blockEntry : blocks ) {
 
+      Block block = blockEntry.getValue();
 			//
 			//	Enumerate over windows within the block
 			for (int winIdx : block.getWinIdx() ) {
@@ -65,7 +67,9 @@ public class LinearAnalysisComputeLRT1 {
 		//
 		//	Enumerate over blocks
 		int b = - 1;
-		for ( Block block : blocks ) {
+		for ( Map.Entry<Integer, Block> blockEntry : blocks ) {
+      Block block = blockEntry.getValue();
+
 			b++;
 			//
 			//	Reset block scores

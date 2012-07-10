@@ -7,27 +7,32 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.StringTokenizer;
 import java.util.Vector;
+import java.util.HashMap;
+import java.util.Map;
 
-public class Blocks implements Iterable<Block> {
+//public class Blocks implements Iterable<Block> {
+public class Blocks implements Iterable<Map.Entry<Integer, Block> >{
 	
 	public Blocks() {
-		blocks = new Vector<Block>();
+		blocks = new HashMap<Integer, Block>();
 	}
 	
+  /*
 	public void sortBlocks() {
 		Collections.sort( blocks );
 	}
+  */
 	
 	public void add( Block block ) {
-		blocks.add( block );
+		blocks.put(block.getID(), block );
 	}
 
   public Block get(int b) {
     return blocks.get(b);
   }
 	
-	public Iterator<Block> iterator() {
-		return blocks.iterator();
+	public Iterator<Map.Entry<Integer, Block> > iterator() {
+		return blocks.entrySet().iterator();
 	}
 	
 	public static Blocks load( String fileName )  throws IOException {
@@ -44,7 +49,7 @@ public class Blocks implements Iterable<Block> {
 
 			//
 			//	Set the fields
-			int winID = Integer.parseInt( fields[0] );
+			int blockID = Integer.parseInt( fields[0] );
 			// double startCM = Double.parseDouble( fields[1] );
 			// double endCM = Double.parseDouble( fields[2] );
 			String winListStr = fields[1];
@@ -75,11 +80,11 @@ public class Blocks implements Iterable<Block> {
 			
 			//
 			//	Generate the window
-			Block b = new Block( winID, -1, -1, winIdx, th );
+			Block b = new Block( blockID, -1, -1, winIdx, th );
 
 			//
 			//	Add to windows
-			blocks.add( b );
+			blocks.add(b);
 			
 			
 		}
@@ -88,6 +93,6 @@ public class Blocks implements Iterable<Block> {
 		return blocks;
 	}
 	
-	private Vector<Block> blocks;
+	private Map<Integer, Block> blocks;
 	
 }
