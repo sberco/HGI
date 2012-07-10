@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.util.Properties;
 import java.util.Vector;
 
+import Model.Block;
 import Model.Blocks;
 import Model.Index;
 import Model.Labels;
@@ -15,6 +16,8 @@ import Model.Relations;
 import Model.Scores;
 import Model.WinModels;
 import Model.Windows;
+
+import Utils.Common;
 
 /**
  * 
@@ -87,15 +90,20 @@ public class AnalysisRunnerLRT2Recompute {
 		////////////////////////////////////////////////////////////////////////////////		
 		System.err.println("Applying analysis.");
 		LinearAnalysisComputeLRT1 la = new LinearAnalysisComputeLRT1();
+
+    if (calledBlockIO != null)
+      calledBlockIO.write("#queryName\thitName\tisCorrectPair\tblockIdx\twinStart\twinEnd\tsnpStart\tsnpEnd\tnumRHs\n"); // header
+
 		// for ( String queryID : query ) {
 		for (int q = 0; q < query.getNumIndividuals(); ++q) {
+
 			String queryID = query.getName(q);
 			System.err.println("Analyzing "+ queryID );
 			int queryConfs[] = query.getIndConf( queryID );
 
 			Vector<Vector<Integer> > ibd_blocks = new Vector<Vector<Integer> >();
 
-			int relatedIndividuals[] = la.getRelated( labels, queryConfs, w1Index, blocks, windows, winModels, w1Scores, relations, queryID, ibd_blocks );
+			int relatedIndividuals[] = la.getRelated( labels, queryConfs, snpIndex, blocks, windows, winModels, w1Scores, relations, queryID, ibd_blocks );
 
 			int i = 0;
 			for ( int ind : relatedIndividuals ) {
@@ -103,8 +111,6 @@ public class AnalysisRunnerLRT2Recompute {
 
 				if (calledBlockIO != null)
 				{
-					calledBlockIO.write("#queryName\thitName\tisCorrectPair\tblockIdx\twinStart\twinEnd\tsnpStart\tsnpEnd\n"); // header
-
 					for (int b : ibd_blocks.get(i))
 					{
 						String correct = "F";
@@ -113,16 +119,18 @@ public class AnalysisRunnerLRT2Recompute {
 						if (relations.isRelated(queryID, indName))
 							correct = "T";
 
-						int wstart = blocks.get(b).getFirstWindow();
-						int wend   = blocks.get(b).getLastWindow() + 1;
+            Block block = blocks.get(b);
+
+						int wstart = block.getFirstWindow();
+						int wend   = block.getLastWindow() + 1;
 						int mstart = windows.get(wstart).getFirstSnp();
 						int mend   = windows.get(wend - 1).getLastSnp() + 1;
 
 						calledBlockIO.write(queryID + "\t" + indName + "\t" + correct + "\t" + b
 								+ "\t" + wstart + "\t" + wend
 								+ "\t" + mstart + "\t" + mend 
+                + "\t" + Common.CountReverseHomozygotes(windows, block, query, snpIndex, q, ind)
 								+ "\n");
-
 					}
 				}
 				++i;
@@ -148,18 +156,12 @@ public class AnalysisRunnerLRT2Recompute {
 		String labelFN = experimentConf.getProperty("labelFile");
 		System.err.println("Loading index-individuals labels:"+ labelFN );
 		labels = Labels.load( labelFN );
-
-//		//
-//		//	Load index file
-//		String indexFN = experimentConf.getProperty("indexFile");
-//		System.err.println("Loading indexed individuals"+ indexFN );
-//		index = Index.load( indexFN, windowSize );
 		
 		//
 		//	Load index file
 		String w1IndexFN = experimentConf.getProperty("w1IndexFile");
 		System.err.println("Loading indexed individuals"+ w1IndexFN );
-		w1Index = Index.load( w1IndexFN, windowSize );
+		snpIndex = Index.load( w1IndexFN, windowSize );
 
 
 		//
@@ -203,8 +205,7 @@ public class AnalysisRunnerLRT2Recompute {
 	}
 
 	private static Labels labels = null;
-	private static Index index = null;
-	private static Index w1Index = null;
+	private static Index snpIndex = null;
 	private static Query query = null;
 	private static Relations relations = null;
 	private static Blocks blocks = null;
