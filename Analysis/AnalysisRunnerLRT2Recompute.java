@@ -16,33 +16,6 @@ import Model.Scores;
 import Model.WinModels;
 import Model.Windows;
 
-/* Please implement this for consistency
- *
- const double GAUSS_MAX_Z = 8; // Highest z-score
-  const double GAUSS_MIN_PROB = gsl_ran_gaussian_pdf(GAUSS_MAX_Z, 1); // Lowestp rob we can get out of GSL
-
-  double LRT2(double lrt1, const WinModel &model)
-  {
-    double prob_u = gsl_ran_gaussian_pdf(lrt1 - model.mu_u, model.sd_u); // gsl assumes mean 0 and passed sd
-    double prob_r = gsl_ran_gaussian_pdf(lrt1 - model.mu_r, model.sd_r);
-
-    if (prob_u < GAUSS_MIN_PROB || model.sd_u == 0) // If sd_u/r == 0, then gauss returns nan...
-      prob_u = GAUSS_MIN_PROB;
-    if (prob_r < GAUSS_MIN_PROB || model.sd_r == 0)
-      prob_r = GAUSS_MIN_PROB;
-
-    float lrt2 = (log(prob_r) - log(prob_u)) / log(10);
-
-    // Clamp to avoid upper tail problem;
-    if (model.mu_r > model.mu_u && lrt1 > model.mu_r && prob_r < prob_u)
-      lrt2 *= -1;
-
-    return lrt2;
-  }
-*/
-
-
-
 /**
  * 
  * Under this analysis running, LRT1 scores for larger windows are recomputed on 
@@ -130,7 +103,7 @@ public class AnalysisRunnerLRT2Recompute {
 
 				if (calledBlockIO != null)
 				{
-					calledBlockIO.write("#queryName\thitName\tisCorrect\tblockIdx\twinStart\twinEnd\tsnpStart\tsnpEnd\n"); // header
+					calledBlockIO.write("#queryName\thitName\tisCorrectPair\tblockIdx\twinStart\twinEnd\tsnpStart\tsnpEnd\n"); // header
 
 					for (int b : ibd_blocks.get(i))
 					{
