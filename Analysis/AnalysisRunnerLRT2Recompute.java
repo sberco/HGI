@@ -44,14 +44,12 @@ public class AnalysisRunnerLRT2Recompute {
 		//
 		////////////////////////////////////////////////////////////////////////////////		
 		if ( args.length < 1 || args[0].equals("-h") ) {
-			System.err.println("args: <config_file> [calledBLocks]");
+			System.err.println("args: <config_file>");
 			System.exit(-1);
 		}
 		
 		String confFileName = args[0];
 		BufferedWriter calledBlockIO = null;
-		if (args.length >= 2)
-			calledBlockIO = new BufferedWriter(new FileWriter(args[1]));
 
 		System.err.println("Loading experiment properties:");
 		Properties experimentConf = new Properties();
@@ -62,6 +60,9 @@ public class AnalysisRunnerLRT2Recompute {
 			exp.printStackTrace();
 			System.exit(-1);
 		}
+
+		String callFN = experimentConf.getProperty("outCallFile");
+		calledBlockIO = new BufferedWriter(new FileWriter(callFN));
 
 		//
 		//	Compute window size
@@ -91,8 +92,7 @@ public class AnalysisRunnerLRT2Recompute {
 		System.err.println("Applying analysis.");
 		LinearAnalysisComputeLRT1 la = new LinearAnalysisComputeLRT1();
 
-    if (calledBlockIO != null)
-      calledBlockIO.write("#queryName\thitName\tisCorrectPair\tblockIdx\twinStart\twinEnd\tsnpStart\tsnpEnd\tnumRHs\n"); // header
+		calledBlockIO.write("#queryName\thitName\tisCorrectPair\tblockIdx\twinStart\twinEnd\tsnpStart\tsnpEnd\tnumRHs\n"); // header
 
 		// for ( String queryID : query ) {
 		for (int q = 0; q < query.getNumIndividuals(); ++q) {
@@ -109,38 +109,35 @@ public class AnalysisRunnerLRT2Recompute {
 			for ( int ind : relatedIndividuals ) {
 				System.out.println("FOUND RELATED:\t"+ queryID+"\t"+labels.getString(ind) );
 
-				if (calledBlockIO != null)
+				for (int b : ibd_blocks.get(i))
 				{
-					for (int b : ibd_blocks.get(i))
-					{
-						String correct = "F";
-						String indName = labels.getString(ind);
+					String correct = "F";
+					String indName = labels.getString(ind);
 
-						if (relations.isRelated(queryID, indName))
-							correct = "T";
+					if (relations.isRelated(queryID, indName))
+						correct = "T";
 
-            Block block = blocks.get(b);
+					Block block = blocks.get(b);
 
-						int wstart = block.getFirstWindow();
-						int wend   = block.getLastWindow() + 1;
-						int mstart = windows.get(wstart).getFirstSnp();
-						int mend   = windows.get(wend - 1).getLastSnp() + 1;
+					int wstart = block.getFirstWindow();
+					int wend   = block.getLastWindow() + 1;
+					int mstart = windows.get(wstart).getFirstSnp();
+					int mend   = windows.get(wend - 1).getLastSnp() + 1;
 
-						calledBlockIO.write(queryID + "\t" + indName + "\t" + correct + "\t" + b
-								+ "\t" + wstart + "\t" + wend
-								+ "\t" + mstart + "\t" + mend 
-                + "\t" + Common.CountReverseHomozygotes(windows, block, query, snpIndex, q, ind)
-								+ "\n");
-					}
+					calledBlockIO.write(queryID + "\t" + indName + "\t" + correct + "\t" + b
+					    + "\t" + wstart + "\t" + wend
+					    + "\t" + mstart + "\t" + mend 
+					    + "\t" + Common.CountReverseHomozygotes(windows, block, query, snpIndex, q, ind)
+					    + "\n");
 				}
+
 				++i;
 			}
 
 			//			break;
 		}
 
-		if (calledBlockIO != null)
-			calledBlockIO.close();
+		calledBlockIO.close();
 
 
 		//
