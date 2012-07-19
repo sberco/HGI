@@ -16,6 +16,7 @@ import Model.Relations;
 import Model.Scores;
 import Model.WinModels;
 import Model.Windows;
+import Model.Result;
 
 import Utils.Common;
 
@@ -92,7 +93,7 @@ public class AnalysisRunnerLRT2Recompute {
 		System.err.println("Applying analysis.");
 		LinearAnalysisComputeLRT1 la = new LinearAnalysisComputeLRT1();
 
-		calledBlockIO.write("#queryName\thitName\tisCorrectPair\tblockIdx\twinStart\twinEnd\tsnpStart\tsnpEnd\tnumRHs\n"); // header
+		calledBlockIO.write("#queryName\thitName\tisCorrectPair\tblockIdx\twinStart\twinEnd\tsnpStart\tsnpEnd\tcallScore\tnumRHs\n"); // header
 
 		// for ( String queryID : query ) {
 		for (int q = 0; q < query.getNumIndividuals(); ++q) {
@@ -101,15 +102,15 @@ public class AnalysisRunnerLRT2Recompute {
 			System.err.println("Analyzing "+ queryID );
 			int queryConfs[] = query.getIndConf( queryID );
 
-			Vector<Vector<Integer> > ibd_blocks = new Vector<Vector<Integer> >();
+			Vector<Vector<Result> > results = new Vector<Vector<Result> >();
 
-			int relatedIndividuals[] = la.getRelated( labels, queryConfs, snpIndex, blocks, windows, winModels, w1Scores, relations, queryID, ibd_blocks );
+			int relatedIndividuals[] = la.getRelated( labels, queryConfs, snpIndex, blocks, windows, winModels, w1Scores, relations, queryID, results );
 
 			int i = 0;
 			for ( int ind : relatedIndividuals ) {
 				System.out.println("FOUND RELATED:\t"+ queryID+"\t"+labels.getString(ind) );
 
-				for (int b : ibd_blocks.get(i))
+				for (Result result : results.get(ind))
 				{
 					String correct = "F";
 					String indName = labels.getString(ind);
@@ -117,16 +118,17 @@ public class AnalysisRunnerLRT2Recompute {
 					if (relations.isRelated(queryID, indName))
 						correct = "T";
 
-					Block block = blocks.get(b);
+					Block block = result.block;
 
 					int wstart = block.getFirstWindow();
 					int wend   = block.getLastWindow() + 1;
 					int mstart = windows.get(wstart).getFirstSnp();
 					int mend   = windows.get(wend - 1).getLastSnp() + 1;
 
-					calledBlockIO.write(queryID + "\t" + indName + "\t" + correct + "\t" + b
+					calledBlockIO.write(queryID + "\t" + indName + "\t" + correct + "\t" + result.block.getID()
 					    + "\t" + wstart + "\t" + wend
 					    + "\t" + mstart + "\t" + mend 
+					    + "\t" + result.score
 					    + "\t" + Common.CountReverseHomozygotes(windows, block, query, snpIndex, q, ind)
 					    + "\n");
 				}
