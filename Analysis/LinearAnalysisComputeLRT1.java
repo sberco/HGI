@@ -14,6 +14,7 @@ import Model.WinModel;
 import Model.WinModels;
 import Model.WindowIndex;
 import Model.Windows;
+import Model.Result;
 import Utils.Arrays;
 import java.util.Map;
 
@@ -24,10 +25,10 @@ import java.util.Map;
  */
 public class LinearAnalysisComputeLRT1 {
 
-	public int [] getRelated( Labels labels, int[] queryConfs, Index snpIndex, Blocks blocks, Windows windows, WinModels winModels, Scores snpScoresMatrix, Relations relations, String queryID, Vector<Vector<Integer> > rel_blocks ) {
+	public int [] getRelated( Labels labels, int[] queryConfs, Index snpIndex, Blocks blocks, Windows windows, WinModels winModels, Scores snpScoresMatrix, Relations relations, String queryID, Vector<Vector<Result> > rel_blocks ) {
 
 		HashSet<Integer> relatedIndividuals = new HashSet<Integer>();
-		HashMap<Integer, Vector<Integer> > relatedBlocks = new HashMap<Integer, Vector<Integer> >();
+		HashMap<Integer, Vector<Result> > relatedBlocks = new HashMap<Integer, Vector<Result> >();
 
 		HashMap<Integer, Block> bestBlocks = new HashMap<Integer, Block>();
 		HashMap<Integer, Double> bestScoreDiffs = new HashMap<Integer, Double>();
@@ -69,6 +70,12 @@ public class LinearAnalysisComputeLRT1 {
 		int b = - 1;
 		for ( Map.Entry<Integer, Block> blockEntry : blocks ) {
       Block block = blockEntry.getValue();
+      double thresh;
+      {
+        double[] tmp_thresholds = block.getThresholds().clone();
+        java.util.Arrays.sort(tmp_thresholds);
+        thresh = tmp_thresholds[0];
+      }
 
 			b++;
 			//
@@ -141,7 +148,7 @@ public class LinearAnalysisComputeLRT1 {
 					maxScore = scores[indIdx];
 				}
 
-				double scoreDiff = scores[indIdx] - block.getThresholds()[0];
+				double scoreDiff = scores[indIdx] - thresh;
 				if (!bestScoreDiffs.containsKey(indIdx) || scoreDiff > bestScoreDiffs.get(indIdx)) {
 					bestBlocks.put(indIdx, block);
 					bestScoreDiffs.put(indIdx, scoreDiff);
@@ -149,7 +156,7 @@ public class LinearAnalysisComputeLRT1 {
 
 				//
 				//	Check if individual passes minimal threshold for IBD
-				if ( scores[indIdx]>block.getThresholds()[0] ) {
+				if ( scores[indIdx] > block.getThresholds()[0] ) {
 
 					//
 					//	Add individual to results set
@@ -158,9 +165,9 @@ public class LinearAnalysisComputeLRT1 {
 					//
 					// Append this block to the list of blocks that this relative has IBD
 					if ( !relatedBlocks.containsKey(indIdx) ) {
-						relatedBlocks.put(indIdx, new Vector<Integer>());
+						relatedBlocks.put(indIdx, new Vector<Result>());
 					}
-					relatedBlocks.get(indIdx).add( block.getID() );
+					relatedBlocks.get(indIdx).add(new Result(block, scores[indIdx]));
 
 					//
 					//	TODO: Shows individual specific scores --
@@ -193,9 +200,9 @@ public class LinearAnalysisComputeLRT1 {
 		// Prepare return values
 		Vector<Integer> relatedIndividualsVec = new Vector<Integer>();
 		rel_blocks.clear();
-		for ( int i : relatedIndividuals ) {
-			relatedIndividualsVec.add( i );
-			rel_blocks.add(relatedBlocks.get(i));
+		for ( int ind : relatedIndividuals ) {
+			relatedIndividualsVec.add(ind);
+			rel_blocks.add(relatedBlocks.get(ind));
 		}
 
 		return Arrays.toPrimitiveInteger( relatedIndividualsVec );
