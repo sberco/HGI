@@ -96,7 +96,7 @@ public class AnalysisRunnerLRT2Recompute {
 		calledBlockIO.write("#queryName\thitName\tisCorrectPair\tblockIdx\twinStart\twinEnd\tsnpStart\tsnpEnd\tcallScore\tnumRHs\n"); // header
 
 		// for ( String queryID : query ) {
-		for (int q = 0; q < query.getNumIndividuals(); ++q) {
+		for (int q = 0; q < queryLimit; ++q) {
 
 			String queryID = query.getName(q);
 			System.err.println("Analyzing "+ queryID );
@@ -106,14 +106,14 @@ public class AnalysisRunnerLRT2Recompute {
 
 			int relatedIndividuals[] = la.getRelated( labels, queryConfs, snpIndex, blocks, windows, winModels, w1Scores, relations, queryID, results );
 
-			int i = 0;
-			for ( int ind : relatedIndividuals ) {
-				System.out.println("FOUND RELATED:\t"+ queryID+"\t"+labels.getString(ind) );
+			int relIndIdx = 0;
+			for ( int indId : relatedIndividuals ) {
+				System.out.println("FOUND RELATED:\t"+ queryID+"\t"+labels.getString(indId) );
 
-				for (Result result : results.get(ind))
+				for (Result result : results.get(relIndIdx))
 				{
 					String correct = "F";
-					String indName = labels.getString(ind);
+					String indName = labels.getString(indId);
 
 					if (relations.isRelated(queryID, indName))
 						correct = "T";
@@ -129,11 +129,11 @@ public class AnalysisRunnerLRT2Recompute {
 					    + "\t" + wstart + "\t" + wend
 					    + "\t" + mstart + "\t" + mend 
 					    + "\t" + result.score
-					    + "\t" + Common.CountReverseHomozygotes(windows, block, query, snpIndex, q, ind)
+					    + "\t" + Common.CountReverseHomozygotes(windows, block, query, snpIndex, q, indId)
 					    + "\n");
 				}
 
-				++i;
+				++relIndIdx;
 			}
 
 			//			break;
@@ -168,6 +168,9 @@ public class AnalysisRunnerLRT2Recompute {
 		String queryFN = experimentConf.getProperty("queryFile");
 		System.err.println("Loading query individuals "+ queryFN );
 		query = Query.load( queryFN );
+
+    String queryLimitStr = experimentConf.getProperty("queryLimit");
+    queryLimit = (queryLimitStr != null) ?  Integer.parseInt(queryLimitStr) : query.getNumIndividuals();
 
 		//
 		//	Load relationship file
@@ -206,6 +209,7 @@ public class AnalysisRunnerLRT2Recompute {
 	private static Labels labels = null;
 	private static Index snpIndex = null;
 	private static Query query = null;
+	private static int queryLimit;
 	private static Relations relations = null;
 	private static Blocks blocks = null;
 	private static Windows windows = null;
