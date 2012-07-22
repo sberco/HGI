@@ -1,5 +1,5 @@
-#!/bin/bash
+#!/bin/bash -x
 
-pwd=`pwd`
+scdir=`dirname $0`
 
-java -cp $pwd/:$pwd/jar/* Analysis.AnalysisRunnerLRT2Recompute $*
+java -cp $scdir/:$scdir/jar/* Analysis.AnalysisRunnerLRT2Recompute $*
