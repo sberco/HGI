@@ -174,7 +174,7 @@ public class LinearAnalysisComputeLRT1 {
 					//	TODO: Turn this back on to see (very) relevant information
 					// double cMStart = block.getStartCM();
 					// double cMEnd = block.getEndCM();
-					System.err.println("IBD Block: " + b + " ind: "+ labels.getString(indIdx) +"\twin.startIdx: "+block.getWinIdx()[0]+"\twin.lastIdx: " +block.getWinIdx()[block.getWinIdx().length-1] + "\tscore: "+(Math.round(scores[indIdx] * 100.0) / 100.0)+"\t> thresh: "+block.getThresholds()[0]);
+					System.err.println("IBD Block: " + block.getID() + " ind: "+ labels.getString(indIdx) +"\twin.startIdx: "+block.getWinIdx()[0]+"\twin.lastIdx: " +block.getWinIdx()[block.getWinIdx().length-1] + "\tscore: "+(Math.round(scores[indIdx] * 100.0) / 100.0)+"\t> thresh: "+block.getThresholds()[0]);
 				} // END - Statistic passed threshold
 			} // END - Enumerate over individuals
 		}	// END - Enumerate over blocks
