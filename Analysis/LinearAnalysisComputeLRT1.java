@@ -3,6 +3,7 @@ package Analysis;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Vector;
+import java.util.Properties;
 
 import Model.Block;
 import Model.Blocks;
@@ -25,7 +26,11 @@ import java.util.Map;
  */
 public class LinearAnalysisComputeLRT1 {
 
-	public int [] getRelated( Labels labels, int[] queryConfs, Index snpIndex, Blocks blocks, Windows windows, WinModels winModels, Scores snpScoresMatrix, Relations relations, String queryID, Vector<Vector<Result> > rel_blocks ) {
+	public int [] getRelated( Labels labels, int[] queryConfs, Index snpIndex, Blocks blocks, Windows windows, WinModels winModels, Scores snpScoresMatrix, Relations relations, String queryID, Vector<Vector<Result> > rel_blocks, Properties opts ) {
+
+    boolean do_lrt2 = true;
+    if (opts.getProperty("doLrt2") != null && opts.getProperty("doLrt2").equals("false"))
+      do_lrt2 = false;
 
 		HashSet<Integer> relatedIndividuals = new HashSet<Integer>();
 		HashMap<Integer, Vector<Result> > relatedBlocks = new HashMap<Integer, Vector<Result> >();
@@ -121,12 +126,19 @@ public class LinearAnalysisComputeLRT1 {
 					}
 				}
 
-				//
-				//	Compute LRT2 scores given the LRT1 scores
-				for ( int indIdx=0;indIdx<scores.length;indIdx++ ) {
-					scores[indIdx] += winModel.logLikelihoodRatio( localScoresArr[indIdx] );
-				}
-
+        if (do_lrt2)
+        {
+          //
+          //	Compute LRT2 scores given the LRT1 scores
+          for ( int indIdx=0;indIdx<scores.length;indIdx++ ) {
+            scores[indIdx] += winModel.logLikelihoodRatio( localScoresArr[indIdx] );
+          }
+        }
+        else
+        {
+          for ( int indIdx=0;indIdx<scores.length;indIdx++ )
+            scores[indIdx] += localScoresArr[indIdx];
+        }
 			}	// END - Enumerate over windows
 
 			////////////////////////////////////////////////////////////////////////////////
@@ -206,7 +218,5 @@ public class LinearAnalysisComputeLRT1 {
 		}
 
 		return Arrays.toPrimitiveInteger( relatedIndividualsVec );
-
 	}
-
 }

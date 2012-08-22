@@ -104,7 +104,7 @@ public class AnalysisRunnerLRT2Recompute {
 
 			Vector<Vector<Result> > results = new Vector<Vector<Result> >();
 
-			int relatedIndividuals[] = la.getRelated( labels, queryConfs, snpIndex, blocks, windows, winModels, w1Scores, relations, queryID, results );
+			int relatedIndividuals[] = la.getRelated( labels, queryConfs, snpIndex, blocks, windows, winModels, w1Scores, relations, queryID, results, experimentConf);
 
 			int relIndIdx = 0;
 			for ( int indId : relatedIndividuals ) {
