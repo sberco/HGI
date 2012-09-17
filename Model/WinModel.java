@@ -40,7 +40,7 @@ public class WinModel {
 		return sigmaRelated;
 	}
 	
-	public double logLikelihoodRatio( double lrt1 ) {
+	public double logLikelihoodRatio( double lrt1, boolean do_tail_fix ) {
 
     double prob_u = gUnrelated.value(lrt1);
     double prob_r = gRelated.value(lrt1);
@@ -53,8 +53,11 @@ public class WinModel {
     double lrt2 = (Math.log(prob_r) - Math.log(prob_u)) / Math.log(10);
 
     // Avoid tail issues (if it's obviously far to the right side, it should show up as related not unrelated)
-    if (lrt1 > getMuRelated() && prob_r < prob_u && getMuRelated() > getMuUnrelated())
-      lrt2 *= -1;
+    if (do_tail_fix)
+    {
+      if (lrt1 > getMuRelated() && prob_r < prob_u && getMuRelated() > getMuUnrelated())
+        lrt2 *= -1;
+    }
 
 		return lrt2;
 	}

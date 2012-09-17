@@ -29,8 +29,11 @@ public class LinearAnalysisComputeLRT1 {
 	public int [] getRelated( Labels labels, int[] queryConfs, Index snpIndex, Blocks blocks, Windows windows, WinModels winModels, Scores snpScoresMatrix, Relations relations, String queryID, Vector<Vector<Result> > rel_blocks, Properties opts ) {
 
     boolean do_lrt2 = true;
+    boolean do_tail_fix = true;
     if (opts.getProperty("doLrt2") != null && opts.getProperty("doLrt2").equals("false"))
       do_lrt2 = false;
+    if (opts.getProperty("doTailFix") != null && opts.getProperty("doTailFix").equals("false"))
+      do_tail_fix = false;
 
 		HashSet<Integer> relatedIndividuals = new HashSet<Integer>();
 		HashMap<Integer, Vector<Result> > relatedBlocks = new HashMap<Integer, Vector<Result> >();
@@ -131,7 +134,7 @@ public class LinearAnalysisComputeLRT1 {
           //
           //	Compute LRT2 scores given the LRT1 scores
           for ( int indIdx=0;indIdx<scores.length;indIdx++ ) {
-            scores[indIdx] += winModel.logLikelihoodRatio( localScoresArr[indIdx] );
+            scores[indIdx] += winModel.logLikelihoodRatio( localScoresArr[indIdx], do_tail_fix );
           }
         }
         else
