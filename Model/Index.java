@@ -12,7 +12,7 @@ import Utils.Arrays;
 public class Index {
 	
 	public Index( int windowSize ) {
-		this.numConfs = (int)Math.pow(3, windowSize);
+		this.numConfs = (int)Math.pow(4, windowSize); // 4th genotype => missing
 		this.windowSize = windowSize;
 		windowIndexMap = new HashMap<Integer, WindowIndex>(); 
 	}

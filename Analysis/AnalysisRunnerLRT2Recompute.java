@@ -68,7 +68,7 @@ public class AnalysisRunnerLRT2Recompute {
 		//
 		//	Compute window size
 		windowSize = Integer.parseInt( experimentConf.getProperty("windowSize") );
-		numConfigurations = (int)Math.pow(3, windowSize );
+		numConfigurations = (int)Math.pow(4, windowSize ); // Can have missing genotype (4th genotype)
 
 
 		////////////////////////////////////////////////////////////////////////////////

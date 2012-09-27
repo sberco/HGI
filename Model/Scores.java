@@ -11,7 +11,7 @@ public class Scores {
 	
 	public Scores( int windowSize ) {
 		this.windowSize = windowSize;
-		numConfs = (int)Math.pow(3, windowSize );
+		numConfs = (int)Math.pow(4, windowSize ); // Can have missing values as genotype
 		scoreMap = new HashMap<Integer, double[]>();
 		badSet = new HashSet<Integer>();
 	}
@@ -54,7 +54,7 @@ public class Scores {
 		Scores score = new Scores( windowSize );
 		BufferedReader br = new BufferedReader( new FileReader( fileName ) );
 		String line;
-		int numConfs = (int)Math.pow( 3, windowSize );
+		int numConfs = (int)Math.pow( 4, windowSize ); // Can have missing values as genotype
 		while ((line=br.readLine())!=null ) {
 			StringTokenizer st = new StringTokenizer( line );
 			int windowIdx = Integer.decode( st.nextToken() );
