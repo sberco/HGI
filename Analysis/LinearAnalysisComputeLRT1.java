@@ -73,6 +73,16 @@ public class LinearAnalysisComputeLRT1 {
 		//
 		////////////////////////////////////////////////////////////////////////////////
 
+    // Check if the query name is in the database names so we can skip it
+    int dbIdxToSkip = -1;
+    for (int dbIdx = 0; dbIdx < labels.size(); ++dbIdx)
+    {
+      String dbIndName = labels.getString(dbIdx);
+      if (dbIndName.equals(queryID))
+        dbIdxToSkip = dbIdx;
+    }
+
+
 		//
 		//	Enumerate over blocks
 		int b = - 1;
@@ -156,6 +166,10 @@ public class LinearAnalysisComputeLRT1 {
 			String i1 = "p1.i1";
 			String i2 = "p1.i2";
 			for ( int indIdx=0;indIdx<scores.length;indIdx++ ) {
+
+        // Skip any db person with the same name as the query person
+        if (indIdx == dbIdxToSkip)
+          continue;
 
 				//
 				//	Keep track of highest score
