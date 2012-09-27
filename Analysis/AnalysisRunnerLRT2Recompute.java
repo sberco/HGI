@@ -115,7 +115,9 @@ public class AnalysisRunnerLRT2Recompute {
 					String correct = "F";
 					String indName = labels.getString(indId);
 
-					if (relations.isRelated(queryID, indName))
+          if (relations.size() == 0)
+            correct = "?";
+          else if (relations.isRelated(queryID, indName))
 						correct = "T";
 
 					Block block = result.block;
@@ -175,8 +177,13 @@ public class AnalysisRunnerLRT2Recompute {
 		//
 		//	Load relationship file
 		String relationshipFN = experimentConf.getProperty("relationshipFile");
-		System.err.println("Loading relationship file.");
-		relations = Relations.load( relationshipFN );
+    if (relationshipFN != null)
+    {
+      System.err.println("Loading relationship file.");
+      relations = Relations.load( relationshipFN );
+    }
+    else
+      relations = new Relations();
 		
 		//
 		//	Load window file : which snps are in which window

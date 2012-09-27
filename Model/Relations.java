@@ -48,6 +48,11 @@ public class Relations {
 		br.close();
 		return relations;
 	}
+
+  public int size()
+  {
+    return relations.size();
+  }
 	
 	private HashMap<String,Vector<String>> relations;
 }
