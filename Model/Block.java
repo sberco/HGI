@@ -40,6 +40,10 @@ public class Block implements Comparable<Block> {
 		return thresholds;
 	}
 
+    public double getFirstThreshold() {
+        return thresholds[0];
+    }
+
   public int getFirstWindow() {
     return getWinIdx()[0];
   }
