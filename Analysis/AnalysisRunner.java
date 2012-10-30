@@ -10,6 +10,7 @@ import java.util.Vector;
 import Model.Block;
 import Model.Blocks;
 import Model.Index;
+import Model.Constants;
 import Model.Labels;
 import Model.Query;
 import Model.Relations;
@@ -33,14 +34,12 @@ public class AnalysisRunner {
 		//
 		////////////////////////////////////////////////////////////////////////////////		
 		if ( args.length < 1 || args[0].equals("-h") ) {
-			System.err.println("args: <config_file> [calledBLocks]");
+			System.err.println("args: <config_file>");
 			System.exit(-1);
 		}
-		
+
 		String confFileName = args[0];
 		BufferedWriter calledBlockIO = null;
-		if (args.length >= 2)
-			calledBlockIO = new BufferedWriter(new FileWriter(args[1]));
 
 		System.err.println("Loading experiment properties:");
 		Properties experimentConf = new Properties();
@@ -52,10 +51,13 @@ public class AnalysisRunner {
 			System.exit(-1);
 		}
 
-		//
+
+		String callFN = experimentConf.getProperty("outCallFile");
+		calledBlockIO = new BufferedWriter(new FileWriter(callFN));
+
 		//	Compute window size
-		windowSize = Integer.parseInt( experimentConf.getProperty("windowSize") );
-		numConfigurations = (int)Math.pow(3, windowSize );
+		windowSize = Integer.parseInt(experimentConf.getProperty("windowSize"));
+		numConfigurations = (int) Math.pow(Constants.NUM_GENO_STATES, windowSize);
 
 
 		////////////////////////////////////////////////////////////////////////////////
