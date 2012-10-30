@@ -14,6 +14,7 @@ import Model.Labels;
 import Model.Query;
 import Model.Relations;
 import Model.Scores;
+import Model.Constants;
 
 public class AnalysisRunner {
 
@@ -55,7 +56,7 @@ public class AnalysisRunner {
 		//
 		//	Compute window size
 		windowSize = Integer.parseInt( experimentConf.getProperty("windowSize") );
-		numConfigurations = (int)Math.pow(3, windowSize );
+		numConfigurations = (int)Math.pow(Model.Constants.NUM_GENO_STATES, windowSize );
 
 
 		////////////////////////////////////////////////////////////////////////////////
