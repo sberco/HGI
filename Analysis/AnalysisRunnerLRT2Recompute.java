@@ -17,6 +17,7 @@ import Model.Scores;
 import Model.WinModels;
 import Model.Windows;
 import Model.Result;
+import Model.Constants;
 
 import Utils.Common;
 
@@ -68,7 +69,7 @@ public class AnalysisRunnerLRT2Recompute {
 		//
 		//	Compute window size
 		windowSize = Integer.parseInt( experimentConf.getProperty("windowSize") );
-		numConfigurations = (int)Math.pow(4, windowSize ); // Can have missing genotype (4th genotype)
+		numConfigurations = (int)Math.pow(Constants.NUM_GENO_STATES, windowSize ); // Can have missing genotype (4th genotype)
 
 
 		////////////////////////////////////////////////////////////////////////////////
