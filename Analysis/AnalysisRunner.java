@@ -14,6 +14,7 @@ import Model.Constants;
 import Model.Labels;
 import Model.Query;
 import Model.Relations;
+import Model.Result;
 import Model.Scores;
 
 public class AnalysisRunner {
@@ -81,51 +82,68 @@ public class AnalysisRunner {
 		////////////////////////////////////////////////////////////////////////////////		
 		System.err.println("Applying analysis.");
 		LinearAnalysis la = new LinearAnalysis();
+
+        calledBlockIO.write("#queryName\thitName\tisCorrectPair\tblockIdx\twinStart\twinEnd\tsnpStart\tsnpEnd\tcallScore\tnumRHs\n"); // header
+
 		// for ( String queryID : query ) {
 		for (int q = 0; q < query.getNumIndividuals(); ++q) {
+
 			String queryID = query.getName(q);
-			System.err.println("Analyzing "+ queryID );
+			System.err.println("Analyzing "+ queryID);
 			int queryConfs[] = query.getIndConf( queryID );
 
-			Vector<Vector<Integer> > ibd_blocks = new Vector<Vector<Integer> >();
+			Vector<Vector<Result> > results = new Vector<Vector<Result> >();
 
-			int relatedIndividuals[] = la.getRelated( labels, queryConfs, index, blocks, scores, relations, queryID, ibd_blocks );
-			int i = 0;
-			for ( int ind : relatedIndividuals ) {
-				System.out.println("FOUND RELATED:\t"+ queryID+"\t"+labels.getString(ind) );
+			int relatedIndividuals[] = la.getRelated(labels,
+                                                     queryConfs,
+                                                     index,
+                                                     blocks,
+                                                     scores,
+                                                     relations,
+                                                     queryID,
+                                                     results);
 
-				if (calledBlockIO != null)
-				{
-					calledBlockIO.write("#queryName\thitName\tisCorrect\tblockIdx\twinStart\twinEnd\tsnpStart\tsnpEnd\n"); // header
 
-					for (int b : ibd_blocks.get(i))
-					{
-						String correct = "F";
-						String indName = labels.getString(ind);
 
-						if (relations.isRelated(queryID, indName))
-							correct = "T";
 
-						int wstart = blocks.get(b).getFirstWindow();
-						int wend   = blocks.get(b).getLastWindow() + 1;
-						int mstart = wstart * windowSize;
-						int mend   = wend * windowSize;
+			int relIndIdx = 0;
+			for ( int indId : relatedIndividuals ) {
+				System.out.println("FOUND RELATED:\t"+ queryID+"\t"+labels.getString(indId) );
 
-						calledBlockIO.write(queryID + "\t" + indName + "\t" + correct + "\t" + b
-								+ "\t" + wstart + "\t" + wend
-								+ "\t" + mstart + "\t" + mend + "\n");
+                for (Result result : results.get(relIndIdx))
+                {
+                    String correct = "F";
+                    String indName = labels.getString(indId);
 
-					}
-				}
-				++i;
-			}
+                    if (relations.size() == 0)
+                        correct = "?";
+                    else if (relations.isRelated(queryID, indName))
+                        correct = "T";
 
-			//			break;
+                    Block block = result.block;
+
+                    int wstart = block.getFirstWindow();
+                    int wend   = block.getLastWindow() + 1;
+                    int mstart = wstart * windowSize;
+                    int mend   = wend * windowSize;
+
+                    calledBlockIO.write(queryID +
+                                        "\t" + indName +
+                                        "\t" + correct +
+                                        "\t" + block.getID() +
+                                        "\t" + wstart + "\t" + wend +
+                                        "\t" + mstart + "\t" + mend +
+                                        "\t" + result.score +
+                                        "\t" + "-1" +
+                                        "\n");
+
+                }
+
+                ++relIndIdx;
+            }
 		}
 
-		if (calledBlockIO != null)
-			calledBlockIO.close();
-
+        calledBlockIO.close();
 
 		//
 		//	Analysis done
@@ -192,3 +210,9 @@ public class AnalysisRunner {
 	private static int numConfigurations;
 
 }
+
+
+// Local Variables:
+// c-basic-offset: 4
+// c-file-style: "bsd"
+// End:

@@ -105,7 +105,17 @@ public class AnalysisRunnerLRT2Recompute {
 
 			Vector<Vector<Result> > results = new Vector<Vector<Result> >();
 
-			int relatedIndividuals[] = la.getRelated( labels, queryConfs, snpIndex, blocks, windows, winModels, w1Scores, relations, queryID, results, experimentConf);
+			int relatedIndividuals[] = la.getRelated(labels,
+                                                     queryConfs,
+                                                     snpIndex,
+                                                     blocks,
+                                                     windows,
+                                                     winModels,
+                                                     w1Scores,
+                                                     relations,
+                                                     queryID,
+                                                     results,
+                                                     experimentConf);
 
 			int relIndIdx = 0;
 			for ( int indId : relatedIndividuals ) {
@@ -116,9 +126,9 @@ public class AnalysisRunnerLRT2Recompute {
 					String correct = "F";
 					String indName = labels.getString(indId);
 
-          if (relations.size() == 0)
-            correct = "?";
-          else if (relations.isRelated(queryID, indName))
+                    if (relations.size() == 0)
+                        correct = "?";
+                    else if (relations.isRelated(queryID, indName))
 						correct = "T";
 
 					Block block = result.block;
@@ -128,18 +138,19 @@ public class AnalysisRunnerLRT2Recompute {
 					int mstart = windows.get(wstart).getFirstSnp();
 					int mend   = windows.get(wend - 1).getLastSnp() + 1;
 
-					calledBlockIO.write(queryID + "\t" + indName + "\t" + correct + "\t" + result.block.getID()
-					    + "\t" + wstart + "\t" + wend
-					    + "\t" + mstart + "\t" + mend 
-					    + "\t" + result.score
-					    + "\t" + Common.CountReverseHomozygotes(windows, block, query, snpIndex, q, indId)
-					    + "\n");
+					calledBlockIO.write(queryID +
+                                        "\t" + indName +
+                                        "\t" + correct +
+                                        "\t" + block.getID() +
+                                        "\t" + wstart + "\t" + wend +
+                                        "\t" + mstart + "\t" + mend +
+                                        "\t" + result.score +
+                                        "\t" + Common.CountReverseHomozygotes(windows, block, query, snpIndex, q, indId) +
+                                        "\n");
 				}
 
 				++relIndIdx;
 			}
-
-			//			break;
 		}
 
 		calledBlockIO.close();
@@ -162,7 +173,7 @@ public class AnalysisRunnerLRT2Recompute {
 		//
 		//	Load index file
 		String w1IndexFN = experimentConf.getProperty("w1IndexFile");
-		System.err.println("Loading indexed individuals"+ w1IndexFN );
+		System.err.println("Loading indexed individuals: "+ w1IndexFN);
 		snpIndex = Index.load( w1IndexFN, windowSize );
 
 

@@ -13,6 +13,7 @@ import Model.Index;
 import Model.Labels;
 import Model.Scores;
 import Model.Relations;
+import Model.Result;
 import Model.WindowIndex;
 import Utils.Arrays;
 import java.util.HashMap;
@@ -26,17 +27,15 @@ public class LinearAnalysis {
                           Scores scoresMatrix,
                           Relations relations,
                           String queryID,
-                          Vector<Vector<Integer> > rel_blocks) {
+                          Vector<Vector<Result> > rel_blocks) {
 
     HashSet<Integer> relatedIndividuals = new HashSet<Integer>();
-    HashMap<Integer, Vector<Integer> > relatedBlocks = new HashMap<Integer, Vector<Integer> >();
+    HashMap<Integer, Vector<Result> > relatedBlocks = new HashMap<Integer, Vector<Result> >();
 
     HashMap<Integer, Block> bestBlocks = new HashMap<Integer, Block>();
     HashMap<Integer, Double> bestScoreDiffs = new HashMap<Integer, Double>();
 
     double scores[] = new double[labels.size()];
-    for (int i = 0; i < labels.size(); i++) scores[i] = 0;
-    int lastStart = 100000000;
 
     // Just to show which blocks are bad
     for (Map.Entry<Integer, Block> blockEntry : blocks) {
@@ -46,6 +45,7 @@ public class LinearAnalysis {
         if (scoresMatrix.isBad(winIdx))
         {
           System.err.println("Block is bad..." + block.getID());
+          System.exit(-1);
           break;
         }
       }
@@ -64,13 +64,6 @@ public class LinearAnalysis {
       boolean shouldSkipBlock = false;
       for (int winIdx = block.getFirstWindow(); winIdx <= block.getLastWindow(); winIdx++) {
 
-        //	Skip bad-score windows
-        if (scoresMatrix.isBad(winIdx)) {
-          shouldSkipBlock = true;
-          System.err.println("Block is bad..." + block.getID());
-          break;
-        }
-
         WindowIndex wi = index.getWindowIndex(winIdx);
 
         //	Enumerate over the configurations
@@ -84,8 +77,6 @@ public class LinearAnalysis {
           }
         }
       }
-      if (shouldSkipBlock)
-        continue;
 
 
 /*
@@ -118,21 +109,10 @@ public class LinearAnalysis {
 
       //	Determine if any of the scores are above the threshold
       double maxScore = scores[0];
-      String i1 = "p1.i1";
-      String i2 = "p1.i2";
       for (int indIdx = 0; indIdx < scores.length; indIdx++) {
 
         if (scores[indIdx] > maxScore)
           maxScore = scores[indIdx];
-
-        /* Debug for one specific test case 
-        if (block.getID() == 465)
-        {
-          if (labels.getString(indIdx).equals(i1) && queryID.equals(i2)) {
-            System.err.println("Score, thresh at known ibd block " + scores[indIdx] + ", " + block.getThreshold());
-          }
-        }
-        */
 
         double scoreDiff = scores[indIdx] - block.getFirstThreshold();
         if (!bestScoreDiffs.containsKey(indIdx) || scoreDiff > bestScoreDiffs.get(indIdx))
@@ -146,10 +126,10 @@ public class LinearAnalysis {
 
           // Append this block to the list of blocks that this relative has IBD
           if (!relatedBlocks.containsKey(indIdx))
-            relatedBlocks.put(indIdx, new Vector<Integer>());
+            relatedBlocks.put(indIdx, new Vector<Result>());
 
-          relatedBlocks.get(indIdx).add(b);
-					
+          relatedBlocks.get(indIdx).add(new Result(block, scores[indIdx]));
+
           //	TODO: Shows individual specific scores --
           //	TODO: Turn this back on to see (very) relevant information
           int snp_start = index.getWindowSize() * block.getFirstWindow();
@@ -164,16 +144,6 @@ public class LinearAnalysis {
                              "\t> thresh: " + block.getFirstThreshold());
         }
       }
-/*
-//			if ( block.getFirstWindow()> 200 ) System.exit(-1);
-//			System.out.println("M:"+ maxScore + "\t"+ block.getThreshold());
-			
-//			Vector<String> scoresStr = new Vector<String>();
-//			for ( int indIdx=0;indIdx<scores.length;indIdx++ ) {
-//				scoresStr.add( scores[indIdx]+"" );
-//			}
-//			System.out.println( block.getFirstWindow()+"-"+block.getLastWindow()+"\t"+	block.getStartCM()+"\t"+(block.getStartCM()+block.getDistCM())+"\t"+StringUtils.join( scoresStr ,"\t") );
-*/
     }
 
     for (int indIdx = 0; indIdx < scores.length; indIdx++) {
