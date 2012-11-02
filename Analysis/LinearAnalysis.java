@@ -52,10 +52,8 @@ public class LinearAnalysis {
     }
 
     //	Enumerate over blocks
-    int b = -1;
     for (Map.Entry<Integer, Block> blockEntry : blocks) {
       final Block block = blockEntry.getValue();
-      ++b;
       //	Zero scores
       for (int i = 0; i < scores.length; i++)
         scores[i] = 0;
@@ -134,7 +132,7 @@ public class LinearAnalysis {
           //	TODO: Turn this back on to see (very) relevant information
           int snp_start = index.getWindowSize() * block.getFirstWindow();
           int snp_stop = index.getWindowSize() * block.getLastWindow();
-          System.err.println("IBD Block: " + b +
+          System.err.println("IBD Block: " + block.getID() +
                              " ind: " + labels.getString(indIdx) +
                              "\twin.startIdx: " + block.getFirstWindow() + 
                              "\twin.lastIdx: " + block.getLastWindow() +
