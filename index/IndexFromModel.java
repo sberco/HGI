@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
+import java.util.Map;
 
 import Model.Block;
 import Model.Blocks;
@@ -17,7 +18,8 @@ public class IndexFromModel {
 	public static InvIndex createIndexFromModel(Labels labels, Index index, Blocks blocks, Scores scoresMatrix, boolean sortByWeights) {
 		HashMap<String, ArrayList<PostingObj>> postingLists = new LinkedHashMap<String, ArrayList<PostingObj>>();
 		LinkedHashSet<Integer> allWindows = new LinkedHashSet<Integer>();
-		for (Block block: blocks) {
+		for (Map.Entry<Integer, Block> blockEntry : blocks) {
+            Block block = blockEntry.getValue();
 			for (int winIdx=block.getFirstWindow(); winIdx <= block.getLastWindow(); winIdx++) {
 				allWindows.add(winIdx);
 			}
