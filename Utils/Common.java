@@ -19,11 +19,56 @@ import Model.Scores;
 import Model.WinModels;
 import Model.Windows;
 import Model.Window;
+import Model.WinGenoConfig;
+import Model.WinGenoConfigResolver;
 import Model.Block;
 
 public class Common
 {
-  public static int CountReverseHomozygotes(Windows windows, Block block, Query query, Index dbSnpIndex, int queryIndIdx, int dbIndIdx) {
+  /**
+   * @param block Count reverse homozygotes across all windows in this block.
+   * @param queryIndIdx Index of the query individual.
+   * @param dbIndIdx Index of the database individual.
+   */
+  public static int countReverseHomozygotes(WinGenoConfigResolver wgcResolver,
+                                            Block block,
+                                            Query query,
+                                            Index dbIndex,
+                                            int queryIndIdx,
+                                            int dbIndIdx) {
+    int rhCount = 0;
+
+    final int[] queryIndConfIds = query.getIndConf(queryIndIdx);
+
+    for (int w : block.getWinIdx()) {
+      final WinGenoConfig ind1 = wgcResolver.resolve(queryIndConfIds[w]);
+
+      final WindowIndex dbWindowIndex = dbIndex.getWindowIndex(w);
+
+      boolean found = false;
+
+      // Would be nice to have an inverted inverted index right about now.
+      for (int confId = 0; confId < dbWindowIndex.getNumConfs(); ++confId) {
+        for (int i : dbWindowIndex.getIndList(confId)) {
+          if (i == dbIndIdx) {
+            rhCount += ind1.countReverseHomozygotes(wgcResolver.resolve(confId));
+            found = true;
+          }
+        }
+      }
+
+      if (!found)
+        throw new AssertionError("DB individual's genotype unknown at window " + w);
+    }
+
+    return rhCount;
+  }
+
+  /**
+   * Incompatible with flexible windows, and knows only of single-SNP windows.
+   */
+  public static int CountReverseHomozygotes(Windows windows, Block block, Query query,
+                                            Index dbSnpIndex, int queryIndIdx, int dbIndIdx) {
     Set<Integer> rh_snps = new HashSet<Integer>();
 
     int wstart = block.getFirstWindow();

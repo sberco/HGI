@@ -16,6 +16,8 @@ import Model.Query;
 import Model.Relations;
 import Model.Result;
 import Model.Scores;
+import Model.WinGenoConfigResolver;
+import Utils.Common;
 
 public class AnalysisRunner {
 
@@ -131,10 +133,10 @@ public class AnalysisRunner {
                                         "\t" + indName +
                                         "\t" + correct +
                                         "\t" + block.getID() +
-                                        "\t" + wstart + "\t" + wend +
-                                        "\t" + mstart + "\t" + mend +
-                                        "\t" + result.score +
                                         "\t" + "-1" +
+                                        "\t" + "-1" +
+                                        "\t" + result.score +
+                                        "\t" + Common.countReverseHomozygotes(winGenoConfigResolver, block, query, index, q, indId) +
                                         "\n");
 
                 }
@@ -171,6 +173,12 @@ public class AnalysisRunner {
 		System.err.println("Loading query individuals "+ queryFN );
 		query = Query.load( queryFN );
 
+        //
+        //  Load genotype enumeration to configuration mapping.
+        String winGenoFN = experimentConf.getProperty("winGenoFile");
+        System.err.println("Loading window genotype configuration mapping: " + winGenoFN);
+        winGenoConfigResolver = WinGenoConfigResolver.load(winGenoFN);
+
 		//
 		//	Load relationship file
 		String relationshipFN = experimentConf.getProperty("relationshipFile");
@@ -205,6 +213,7 @@ public class AnalysisRunner {
 	private static Relations relations = null;
 	private static Blocks blocks = null;
 	private static Scores scores = null;
+    private static WinGenoConfigResolver winGenoConfigResolver = null;
 
 	private static int windowSize;
 	private static int numConfigurations;
