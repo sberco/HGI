@@ -60,7 +60,7 @@ public class LinearAnalysis {
 
       //	Enumerate over windows within blocks
       boolean shouldSkipBlock = false;
-      for (int winIdx = block.getFirstWindow(); winIdx <= block.getLastWindow(); winIdx++) {
+      for (int winIdx : block.getWinIdx()) {
 
         WindowIndex wi = index.getWindowIndex(winIdx);
 
