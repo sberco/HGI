@@ -105,9 +105,6 @@ public class AnalysisRunner {
                                                      queryID,
                                                      results);
 
-
-
-
 			int relIndIdx = 0;
 			for ( int indId : relatedIndividuals ) {
 				System.out.println("FOUND RELATED:\t"+ queryID+"\t"+labels.getString(indId) );
@@ -133,8 +130,8 @@ public class AnalysisRunner {
                                         "\t" + indName +
                                         "\t" + correct +
                                         "\t" + block.getID() +
-                                        "\t" + "-1" +
-                                        "\t" + "-1" +
+                                        "\t" + "-1" + "\t" + "-1" +
+                                        "\t" + "-1" + "\t" + "-1" +
                                         "\t" + result.score +
                                         "\t" + Common.countReverseHomozygotes(winGenoConfigResolver, block, query, index, q, indId) +
                                         "\n");

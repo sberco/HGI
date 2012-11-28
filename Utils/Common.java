@@ -49,16 +49,19 @@ public class Common
 
       // Would be nice to have an inverted inverted index right about now.
       for (int confId = 0; confId < dbWindowIndex.getNumConfs(); ++confId) {
-        for (int i : dbWindowIndex.getIndList(confId)) {
-          if (i == dbIndIdx) {
-            rhCount += ind1.countReverseHomozygotes(wgcResolver.resolve(confId));
-            found = true;
+        final int[] indList = dbWindowIndex.getIndList(confId);
+        if (indList != null) {
+          for (int i : indList) {
+            if (i == dbIndIdx) {
+              rhCount += ind1.countReverseHomozygotes(wgcResolver.resolve(confId));
+              found = true;
+            }
           }
         }
       }
 
       if (!found)
-        throw new AssertionError("DB individual's genotype unknown at window " + w);
+        throw new AssertionError("DB individual " + dbIndIdx + " genotype unknown at window " + w);
     }
 
     return rhCount;
