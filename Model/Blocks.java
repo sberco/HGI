@@ -6,32 +6,34 @@ import java.io.IOException;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.StringTokenizer;
-import java.util.Vector;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 //public class Blocks implements Iterable<Block> {
-public class Blocks implements Iterable<Map.Entry<Integer, Block> >{
-	
+public class Blocks implements Iterable<Map.Entry<Integer, Block>> {
+
 	public Blocks() {
-		blocks = new HashMap<Integer, Block>();
+        // Retains iteration order as insertion order so that we
+        // iterate over blocks in the order described in the loaded
+        // file.
+        blocks = new LinkedHashMap<Integer, Block>();
 	}
-	
+
   /*
 	public void sortBlocks() {
 		Collections.sort( blocks );
 	}
   */
 	
-	public void add( Block block ) {
-		blocks.put(block.getID(), block );
-	}
+    public void add(Block block) {
+        blocks.put(block.getID(), block);
+    }
 
-  public Block get(int b) {
-    return blocks.get(b);
-  }
+    public Block get(int b) {
+        return blocks.get(b);
+    }
 	
-	public Iterator<Map.Entry<Integer, Block> > iterator() {
+	public Iterator<Map.Entry<Integer, Block>> iterator() {
 		return blocks.entrySet().iterator();
 	}
 	
@@ -93,6 +95,6 @@ public class Blocks implements Iterable<Map.Entry<Integer, Block> >{
 		return blocks;
 	}
 	
-	private Map<Integer, Block> blocks;
+    private Map<Integer, Block> blocks;
 	
 }

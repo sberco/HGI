@@ -52,6 +52,7 @@ public class LinearAnalysis {
     }
 
     //	Enumerate over blocks
+    Block prevBlock = null;
     for (Map.Entry<Integer, Block> blockEntry : blocks) {
       final Block block = blockEntry.getValue();
       //	Zero scores
@@ -76,6 +77,15 @@ public class LinearAnalysis {
         }
       }
 
+      if (prevBlock != null) {
+        // Release window scores in previous block that are not in current block.
+        final int lo = prevBlock.getFirstWindow();
+        final int hi = Math.min(prevBlock.getLastWindow(), block.getFirstWindow());
+        for (int winIdx = lo; winIdx <= hi; winIdx++)
+          scoresMatrix.releaseScore(winIdx);
+      }
+
+      prevBlock = block;
 
 /*
 //						//

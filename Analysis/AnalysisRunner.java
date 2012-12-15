@@ -192,7 +192,7 @@ public class AnalysisRunner {
 		//	Load score files
 		String scoreFN = experimentConf.getProperty("scoreFile");
 		System.err.println("Loading window scores"+ scoreFN );
-		scores = Scores.load( scoreFN, windowSize );
+		scores = Scores.lazyLoad(scoreFN, windowSize);
 	}
 
 	/*

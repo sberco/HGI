@@ -68,7 +68,7 @@ public class Common
   }
 
   /**
-   * Incompatible with flexible windows, and knows only of single-SNP windows.
+   * Incompatible with non-adjacent flexible windows, and knows only of single-SNP windows.
    */
   public static int CountReverseHomozygotes(Windows windows, Block block, Query query,
                                             Index dbSnpIndex, int queryIndIdx, int dbIndIdx) {
