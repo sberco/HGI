@@ -27,7 +27,7 @@ public class LinearAnalysis {
                           Scores scoresMatrix,
                           Relations relations,
                           String queryID,
-                          Vector<Vector<Result> > rel_blocks) {
+                          Vector<Vector<Result> > rel_blocks) throws java.io.IOException {
 
     HashSet<Integer> relatedIndividuals = new HashSet<Integer>();
     HashMap<Integer, Vector<Result> > relatedBlocks = new HashMap<Integer, Vector<Result> >();

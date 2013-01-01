@@ -26,7 +26,7 @@ import java.util.Map;
  */
 public class LinearAnalysisComputeLRT1 {
 
-	public int [] getRelated( Labels labels, int[] queryConfs, Index snpIndex, Blocks blocks, Windows windows, WinModels winModels, Scores snpScoresMatrix, Relations relations, String queryID, Vector<Vector<Result> > rel_blocks, Properties opts ) {
+	public int [] getRelated( Labels labels, int[] queryConfs, Index snpIndex, Blocks blocks, Windows windows, WinModels winModels, Scores snpScoresMatrix, Relations relations, String queryID, Vector<Vector<Result> > rel_blocks, Properties opts ) throws java.io.IOException {
 
     boolean do_lrt2 = true;
     boolean do_tail_fix = true;

@@ -15,7 +15,7 @@ import Model.WindowIndex;
 
 public class IndexFromModel {
 
-	public static InvIndex createIndexFromModel(Labels labels, Index index, Blocks blocks, Scores scoresMatrix, boolean sortByWeights) {
+	public static InvIndex createIndexFromModel(Labels labels, Index index, Blocks blocks, Scores scoresMatrix, boolean sortByWeights)  throws java.io.IOException {
 		HashMap<String, ArrayList<PostingObj>> postingLists = new LinkedHashMap<String, ArrayList<PostingObj>>();
 		LinkedHashSet<Integer> allWindows = new LinkedHashSet<Integer>();
 		for (Map.Entry<Integer, Block> blockEntry : blocks) {
